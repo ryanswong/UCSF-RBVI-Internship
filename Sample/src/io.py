@@ -81,6 +81,51 @@ def _read_block(session, stream):
 
 
 
+<<<<<<< HEAD
+=======
+    comment_dict = read_comments(session, stream)
+    molecular_dict = read_molecule(session, stream)
+    atom_dict = read_atom(session, stream, int(molecular_dict["num_atoms"]))
+    bond_dict = read_bond(session, stream, int(molecular_dict["num_bonds"]))
+    substructure_dict = read_substructure(session, stream)
+
+    print_dict(comment_dict)
+    print_dict(molecular_dict)
+    print_dict(atom_dict)
+    print_dict(bond_dict)
+    print_dict(substructure_dict)
+
+    # index2atom = {}
+    # for n in range(0, len(molecular_dict["num_atoms"])):
+    #         atom_index = int(parts[0])
+    #         atom = s.newAtom(name, element)
+    #         index2atom[atom_index] = atom
+
+
+
+
+    # for _ in range(molecular_dict["num_bonds"]):
+    #     a1 = index2atom[index1]
+    #     a2 = index2atom[index2]
+    #     s.newBond(a1, a2)
+
+    test_read = stream.readline().strip()
+
+    stream.close()
+    
+
+    # while len(test_read) == 0:
+    #     if test_read is None:
+    #         print("TEST READ DONE")
+    #         stream.close()
+    #     else:
+    #         print("STILL READING...")
+    #     test_read = stream.readline().strip()
+    # _read_block(session, stream)
+
+
+
+>>>>>>> 230a43b1609e2c605db6cb0bba2ba6861527393c
 
 
 
@@ -218,8 +263,11 @@ def read_substructure(session, stream):
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 _read_block(None, open("ras.mol2", "r"))
 #_read_block(None, open("ras.mol2", "r"))
+=======
+>>>>>>> 230a43b1609e2c605db6cb0bba2ba6861527393c
 =======
 >>>>>>> 230a43b1609e2c605db6cb0bba2ba6861527393c
 
