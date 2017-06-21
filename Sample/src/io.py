@@ -1,8 +1,6 @@
 # vim: set expandtab shiftwidth=4 softtabstop=4:
 
-import sys
-print(sys.version + "\n" + sys.executable)
-print("-"*50 + "\n")
+
 
 # def open_mol2(session, stream, name):
 #     structures = []
@@ -207,6 +205,8 @@ def read_substructure(session, stream):
     substructure_dict = {}
     substructure_labels = ["subst_id", "subst_name", "root_atom", "subst_type",\
     "dict_type", "chain", "sub_type", "inter_bonds", "status", "comment"]
+
+
     substructure_line = stream.readline().split()
 
     for _ in substructure_labels:
@@ -216,11 +216,14 @@ def read_substructure(session, stream):
 
 
 
+### TEST PURPOSE ONLY ####
+def test_run(file_name):
+    import os
+    import sys
+    print(sys.version + "\n" + sys.executable)
+    print("_"*50 + "\n")
+    file = os.path.join(os.getcwd(), 'example_files/ras.mol2'.format(file_name))
+    # print(open(file, "r").read())
+    _read_block(None, open(file, "r"))
 
-
-ras_short = "C:/Users/admin/Documents/GitHub/UCSF-RBVI-Internship/Sample/src/example_files/ras(short).mol2"
-ras_full = "C:/Users/admin/Documents/GitHub/UCSF-RBVI-Internship/Sample/src/example_files/ras.mol2"
-
-
-_read_block(None, open(ras_short, "r"))
-# _read_block(None, open(ras_full, "r"))
+test_run("ras(short).mol2")
