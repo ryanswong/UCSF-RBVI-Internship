@@ -9,6 +9,7 @@ def open_mol2(session, stream, name):
     while True:
         s = _read_block(session, stream)
 <<<<<<< HEAD
+<<<<<<< HEAD
         if not s:
             break
         structures.append(s)
@@ -17,6 +18,8 @@ def open_mol2(session, stream, name):
     status = ("Opened mol2 file containing {} structures ({} atoms, {} bonds)".format
               (len(structures), atoms, bonds))
 =======
+=======
+>>>>>>> 6476ba2d6e3eec12a1c7f7062a1ea7642c88d4ef
         print(s)
         if not s:
             break
@@ -25,6 +28,9 @@ def open_mol2(session, stream, name):
     #     bonds += s.num_bonds
     status = ("Opened mol2 file containing {} structures ({} atoms, {} bonds)".format
               (len(structures), 0, 0))
+<<<<<<< HEAD
+>>>>>>> 6476ba2d6e3eec12a1c7f7062a1ea7642c88d4ef
+=======
 >>>>>>> 6476ba2d6e3eec12a1c7f7062a1ea7642c88d4ef
     return structures, status
 
@@ -82,6 +88,9 @@ def _read_block(session, stream):
 
     return True
 
+<<<<<<< HEAD
+>>>>>>> 6476ba2d6e3eec12a1c7f7062a1ea7642c88d4ef
+=======
 >>>>>>> 6476ba2d6e3eec12a1c7f7062a1ea7642c88d4ef
     # index2atom = {}
     # for n in range(0, len(molecular_dict["num_atoms"])):
@@ -98,6 +107,7 @@ def _read_block(session, stream):
     #     s.newBond(a1, a2)
 
     # for _ in range(10):
+<<<<<<< HEAD
 <<<<<<< HEAD
     #     test_read = stream.readline().strip()
     #     print("test read: " , test_read)
@@ -125,6 +135,10 @@ def _read_block(session, stream):
     #     test_read = stream.readline().strip()
     #     print("test read: " , test_read)    
 >>>>>>> 6476ba2d6e3eec12a1c7f7062a1ea7642c88d4ef
+=======
+    #     test_read = stream.readline().strip()
+    #     print("test read: " , test_read)    
+>>>>>>> 6476ba2d6e3eec12a1c7f7062a1ea7642c88d4ef
 
 
 
@@ -139,10 +153,13 @@ def read_comments(session, stream):
     comment_dict = {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     comment = stream.readline()
     if not comment:
         return false
 
+=======
+>>>>>>> 6476ba2d6e3eec12a1c7f7062a1ea7642c88d4ef
 =======
 >>>>>>> 6476ba2d6e3eec12a1c7f7062a1ea7642c88d4ef
 
@@ -172,10 +189,13 @@ def read_comments(session, stream):
                 comment_dict[str(parts[0])] = str(parts[1])
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         comment = stream.readline()
         if not comment:
             return None
 
+=======
+>>>>>>> 6476ba2d6e3eec12a1c7f7062a1ea7642c88d4ef
 =======
 >>>>>>> 6476ba2d6e3eec12a1c7f7062a1ea7642c88d4ef
     return comment_dict
