@@ -29,7 +29,7 @@ def print_dict(dict):
 
 
 def _read_block(session, stream):
-    """test docstring"""
+    """fucntion that calls subfucntions that each read a specific section of the mol2 file"""
     # First section should be commented out
     # Second section: "@<TRIPOS>MOLECULE"
     # Third section: "@<TRIPOS>ATOM"
@@ -37,28 +37,64 @@ def _read_block(session, stream):
     # Fifth section: "@<TRIPOS>SUBSTRUCTURE"
 
     from numpy import (array, float64)
-    from chimerax.core.atomic import AtomicStructure
+    from ChimeraX.core.atomic import AtomicStructure
 
-    read_comments(session, stream)
-    x = read_molecule(session, stream)
-    read_atom(session, stream, int(x["num_atoms"]))
-    read_bond(session, stream, int(x["num_bonds"]))
-    read_substructure(session, stream)
+    comment_dict = read_comments(session, stream)
+    molecular_dict = read_molecule(session, stream)
+    atom_dict = read_atom(session, stream, int(molecular_dict["num_atoms"]))
+    bond_dict = read_bond(session, stream, int(molecular_dict["num_bonds"]))
+    substructure_dict = read_substructure(session, stream)
 
-    while len(stream.readline()) == 0:
-        pass
+    print_dict(comment_dict)
+    print_dict(molecular_dict)
+    print_dict(atom_dict)
+    print_dict(bond_dict)
+    print_dict(substructure_dict)
 
-    _read_block(session, stream)
+    # index2atom = {}
+    # for n in range(0, len(molecular_dict["num_atoms"])):
+    #         atom_index = int(parts[0])
+    #         atom = s.newAtom(name, element)
+    #         index2atom[atom_index] = atom
+
+
+
+
+    # for _ in range(molecular_dict["num_bonds"]):
+    #     a1 = index2atom[index1]
+    #     a2 = index2atom[index2]
+    #     s.newBond(a1, a2)
+
+    test_read = stream.readline().strip()
+
+    stream.close()
+    
+
+    # while len(test_read) == 0:
+    #     if test_read is None:
+    #         print("TEST READ DONE")
+    #         stream.close()
+    #     else:
+    #         print("STILL READING...")
+    #     test_read = stream.readline().strip()
+    # _read_block(session, stream)
+
+
+
+
+
 
     # s = AtomicStructure(session)
 
 
 def read_comments(session, stream):
+    """Parses commented section"""
 
     import ast
     comment_dict = {}
 
     comment = stream.readline()
+
     while comment[0] == "#":
         line = comment.replace("#", "")
         parts = line.split(":")
@@ -77,9 +113,10 @@ def read_comments(session, stream):
 
         comment = stream.readline()
 
-    print_dict(comment_dict)
+    return comment_dict
 
 def read_molecule(sesson, stream):
+    """Parses molecule section"""
 
     import ast
     while "@<TRIPOS>MOLECULE" not in stream.readline():
@@ -97,11 +134,11 @@ def read_molecule(sesson, stream):
             molecular_dict[label] = molecule_line[0]
 
 
-    print_dict(molecular_dict)
     return molecular_dict
 
 
 def read_atom(session, stream, atom_count):
+    """parses atom section"""
 
     import ast
     while "@<TRIPOS>ATOM" not in stream.readline():
@@ -129,7 +166,7 @@ def read_atom(session, stream, atom_count):
         #     return None
 
         val_list = []
-        atom_dict[int(parts[0])] = val_list
+        atom_dict[str(parts[0])] = val_list
         for value in parts[1:]:
             try:
                 val_list.append(ast.literal_eval(value))
@@ -137,9 +174,10 @@ def read_atom(session, stream, atom_count):
                 val_list.append(str(value))
 
     # PRINT TEST. DELETE LATER
-    print_dict(atom_dict)
+    return atom_dict
 
 def read_bond(session, stream, bond_count):
+    """parses bond section"""
 
     while "@<TRIPOS>BOND" not in stream.readline():
         pass
@@ -155,11 +193,11 @@ def read_bond(session, stream, bond_count):
             print("error: first value is needs to be an integer")
             return None
 
-        bond_dict[int(parts[0])] = parts[1:3]
+        bond_dict[str(parts[0])] = parts[1:3]
 
-    print_dict(bond_dict)
-
+    return bond_dict
 def read_substructure(session, stream):
+    """parses substructure section"""
 
     while "@<TRIPOS>SUBSTRUCTURE" not in stream.readline():
         pass
@@ -168,21 +206,26 @@ def read_substructure(session, stream):
 
     substructure_dict = {}
     substructure_labels = ["subst_id", "subst_name", "root_atom", "subst_type",\
-    "dict_type", "chain", "sub_type", "inter_bonds", "status", "comment" ]
+    "dict_type", "chain", "sub_type", "inter_bonds", "status", "comment"]
     substructure_line = stream.readline().split()
 
     for _ in substructure_labels:
         substructure_dict.update(dict(zip(substructure_labels, substructure_line)))
 
-    print_dict(substructure_dict)
+    return substructure_dict
 
 
 
-# _read_block(None, open("ras.mol2", "r"))
-_read_block(None, open("dock.mol2", "r"))
+
+<<<<<<< HEAD
+_read_block(None, open("ras.mol2", "r"))
+#_read_block(None, open("ras.mol2", "r"))
+=======
+>>>>>>> 230a43b1609e2c605db6cb0bba2ba6861527393c
+
+ras_short = "C:/Users/admin/Documents/GitHub/UCSF-RBVI-Internship/Sample/src/example_files/ras(short).mol2"
+ras_full = "C:/Users/admin/Documents/GitHub/UCSF-RBVI-Internship/Sample/src/example_files/ras.mol2"
 
 
-# note to self: try to ask if you can do a pip install package that would
-# not disappear
-
-exit()
+_read_block(None, open(ras_short, "r"))
+# _read_block(None, open(ras_full, "r"))
