@@ -63,12 +63,9 @@ def _read_block(session, stream):
     #     a2 = index2atom[index2]
     #     s.newBond(a1, a2)
 
-    test_read = stream.readline().strip()
-
-    stream.close() # @HANNAH w/o this line, python won't stop running,
-                   # and thats why your mac overheated, especially
-                   # if you ran this file multiple times
-    
+    for _ in range(10):
+        test_read = stream.readline().strip()
+        print("test read: " , test_read)    
 
     # while len(test_read) == 0:
     #     if test_read is None:
@@ -78,6 +75,14 @@ def _read_block(session, stream):
     #         print("STILL READING...")
     #     test_read = stream.readline().strip()
     # _read_block(session, stream)
+
+
+
+    stream.close() # @HANNAH w/o this line, python won't stop running,
+                   # and thats why your mac overheated, especially
+                   # if you ran this file multiple times
+    
+
 
 
 
@@ -221,9 +226,6 @@ def read_substructure(session, stream):
 ### TEST PURPOSE ONLY ####
 def test_run(file_name):
     import os
-    import sys
-    print(sys.version + "\n" + sys.executable)
-    print("_"*50 + "\n")
     file = os.path.join(os.getcwd(), 'example_files/ras.mol2'.format(file_name))
     # print(open(file, "r").read())
     _read_block(None, open(file, "r"))
