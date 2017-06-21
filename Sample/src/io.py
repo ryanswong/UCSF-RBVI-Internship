@@ -2,20 +2,21 @@
 
 
 
-# def open_mol2(session, stream, name):
-#     structures = []
-#     atoms = 0
-#     bonds = 0
-#     while True:
-#         s = _read_block(session, stream)
-#         if not s:
-#             break
-#         structures.append(s)
-#         atoms += s.num_atoms
-#         bonds += s.num_bonds
-#     status = ("Opened mol2 file containing {} structures ({} atoms, {} bonds)".format
-#               (len(structures), atoms, bonds))
-#     return structures, status
+def open_mol2(session, stream, name):
+    structures = []
+    atoms = 0
+    bonds = 0
+    while True:
+        s = _read_block(session, stream)
+        print(s)
+        if not s:
+            break
+    #     structures.append(s)
+    #     atoms += s.num_atoms
+    #     bonds += s.num_bonds
+    status = ("Opened mol2 file containing {} structures ({} atoms, {} bonds)".format
+              (len(structures), 0, 0))
+    return structures, status
 
 
 
@@ -38,6 +39,8 @@ def _read_block(session, stream):
     from chimerax.core.atomic import AtomicStructure
 
     comment_dict = read_comments(session, stream)
+    if not comment_dict:
+        return False
     molecular_dict = read_molecule(session, stream)
     atom_dict = read_atom(session, stream, int(molecular_dict["num_atoms"]))
     bond_dict = read_bond(session, stream, int(molecular_dict["num_bonds"]))
@@ -48,6 +51,8 @@ def _read_block(session, stream):
     print_dict(atom_dict)
     print_dict(bond_dict)
     print_dict(substructure_dict)
+
+    return True
 
     # index2atom = {}
     # for n in range(0, len(molecular_dict["num_atoms"])):
@@ -63,9 +68,9 @@ def _read_block(session, stream):
     #     a2 = index2atom[index2]
     #     s.newBond(a1, a2)
 
-    for _ in range(10):
-        test_read = stream.readline().strip()
-        print("test read: " , test_read)    
+    # for _ in range(10):
+    #     test_read = stream.readline().strip()
+    #     print("test read: " , test_read)    
 
     # while len(test_read) == 0:
     #     if test_read is None:
@@ -78,9 +83,7 @@ def _read_block(session, stream):
 
 
 
-    stream.close() # @HANNAH w/o this line, python won't stop running,
-                   # and thats why your mac overheated, especially
-                   # if you ran this file multiple times
+
     
 
 
@@ -98,9 +101,17 @@ def read_comments(session, stream):
     import ast
     comment_dict = {}
 
-    comment = stream.readline()
 
-    while comment[0] == "#":
+    while True:
+        comment = stream.readline()
+        # print("read comment:", (comment))
+
+        if not comment:
+            return None
+        if not comment_dict and comment[0] == "\n":
+            continue
+        if comment[0] != "#" :
+            break
         line = comment.replace("#", "")
         parts = line.split(":")
         parts = [item.strip() for item in parts]
@@ -115,8 +126,6 @@ def read_comments(session, stream):
 
             except (ValueError, SyntaxError):
                 comment_dict[str(parts[0])] = str(parts[1])
-
-        comment = stream.readline()
 
     return comment_dict
 
@@ -224,10 +233,11 @@ def read_substructure(session, stream):
 
 
 ### TEST PURPOSE ONLY ####
-def test_run(file_name):
-    import os
-    file = os.path.join(os.getcwd(), 'example_files/ras.mol2'.format(file_name))
-    # print(open(file, "r").read())
-    _read_block(None, open(file, "r"))
+# def test_run(file_name):
+#     import os
+#     file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
+#     # print(open(file, "r").read())
+#     with open(file, "r") as stream:
+#         open_mol2(None, stream, file)
 
-test_run("ras(short).mol2")
+# test_run(".mol2")
