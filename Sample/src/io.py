@@ -39,8 +39,8 @@ def _read_block(session, stream):
 
     while True:
         comment_dict = read_comments(session, stream)
-        if(comment_dict == None):
-            break
+        if not comment_dict:
+            return none
 
         molecular_dict = read_molecule(session, stream)
         atom_dict = read_atom(session, stream, int(molecular_dict["num_atoms"]))
@@ -103,9 +103,8 @@ def read_comments(session, stream):
     comment_dict = {}
 
     comment = stream.readline()
-
-
-
+    if not comment:
+        return false
 
 
     while comment[0] == "#":
@@ -125,6 +124,8 @@ def read_comments(session, stream):
                 comment_dict[str(parts[0])] = str(parts[1])
 
         comment = stream.readline()
+        if not comment:
+            return false
 
     return comment_dict
 
