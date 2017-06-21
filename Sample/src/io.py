@@ -67,15 +67,22 @@ def _read_block(session, stream):
 
     test_read = stream.readline().strip()
 
+    stream.close()
+    
 
-    while len(test_read) == 0:
-        if test_read is None:
-            print("TEST READ DONE")
-            stream.close()
-        else:
-            print("STILL READING...")
-        test_read = stream.readline().strip()
-    _read_block(session, stream)
+    # while len(test_read) == 0:
+    #     if test_read is None:
+    #         print("TEST READ DONE")
+    #         stream.close()
+    #     else:
+    #         print("STILL READING...")
+    #     test_read = stream.readline().strip()
+    # _read_block(session, stream)
+
+
+
+
+
 
     # s = AtomicStructure(session)
 
@@ -207,7 +214,13 @@ def read_substructure(session, stream):
 
     return substructure_dict
 
-_read_block(None, open("ras(short).mol2", "r"))
-# _read_block(None, open("dock.mol2", "r"))
 
 
+
+
+ras_short = "C:/Users/admin/Documents/GitHub/UCSF-RBVI-Internship/Sample/src/example_files/ras(short).mol2"
+ras_full = "C:/Users/admin/Documents/GitHub/UCSF-RBVI-Internship/Sample/src/example_files/ras.mol2"
+
+
+_read_block(None, open(ras_short, "r"))
+# _read_block(None, open(ras_full, "r"))
