@@ -40,11 +40,11 @@ def _read_block(session, stream):
 
     comment_dict = read_comments(session, stream)
     if not comment_dict:
-        return False
+        return None
     molecular_dict = read_molecule(session, stream)
     atom_dict = read_atom(session, stream, int(molecular_dict["num_atoms"]))
     bond_dict = read_bond(session, stream, int(molecular_dict["num_bonds"]))
-    substructure_dict = read_substructure(session, stream)
+    substructure_dict = read_substructure(session, stream) #pass in # of substructures
 
     print_dict(comment_dict)
     print_dict(molecular_dict)
@@ -72,27 +72,10 @@ def _read_block(session, stream):
     #     test_read = stream.readline().strip()
     #     print("test read: " , test_read)    
 
-    # while len(test_read) == 0:
-    #     if test_read is None:
-    #         print("TEST READ DONE")
-    #         stream.close()
-    #     else:
-    #         print("STILL READING...")
-    #     test_read = stream.readline().strip()
-    # _read_block(session, stream)
-
-
-
-
-    
-
-
-
-
-
 
 
     # s = AtomicStructure(session)
+    # return s
 
 
 def read_comments(session, stream):
