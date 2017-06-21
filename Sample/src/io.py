@@ -65,7 +65,9 @@ def _read_block(session, stream):
 
     test_read = stream.readline().strip()
 
-    stream.close()
+    stream.close() # @HANNAH w/o this line, python won't stop running,
+                   # and thats why your mac overheated, especially
+                   # if you ran this file multiple times
     
 
     # while len(test_read) == 0:
