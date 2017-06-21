@@ -2,20 +2,20 @@
 
 
 
-# def open_mol2(session, stream, name):
-#     structures = []
-#     atoms = 0
-#     bonds = 0
-#     while True:
-#         s = _read_block(session, stream)
-#         if not s:
-#             break
-#         structures.append(s)
-#         atoms += s.num_atoms
-#         bonds += s.num_bonds
-#     status = ("Opened mol2 file containing {} structures ({} atoms, {} bonds)".format
-#               (len(structures), atoms, bonds))
-#     return structures, status
+def open_mol2(session, stream, name):
+    structures = []
+    atoms = 0
+    bonds = 0
+    while True:
+        s = _read_block(session, stream)
+        if not s:
+            break
+        structures.append(s)
+        atoms += s.num_atoms
+        bonds += s.num_bonds
+    status = ("Opened mol2 file containing {} structures ({} atoms, {} bonds)".format
+              (len(structures), atoms, bonds))
+    return structures, status
 
 
 
@@ -27,7 +27,7 @@ def print_dict(dict):
 
 
 def _read_block(session, stream):
-    """fucntion that calls subfucntions that each read a specific section of the mol2 file"""
+    """function that calls subfunctions that each read a specific section of the mol2 file"""
     # First section should be commented out
     # Second section: "@<TRIPOS>MOLECULE"
     # Third section: "@<TRIPOS>ATOM"
@@ -37,18 +37,22 @@ def _read_block(session, stream):
     from numpy import (array, float64)
     from chimerax.core.atomic import AtomicStructure
 
-    comment_dict = read_comments(session, stream)
-    molecular_dict = read_molecule(session, stream)
-    atom_dict = read_atom(session, stream, int(molecular_dict["num_atoms"]))
-    bond_dict = read_bond(session, stream, int(molecular_dict["num_bonds"]))
-    substructure_dict = read_substructure(session, stream)
+    while True:
+        comment_dict = read_comments(session, stream)
+        if(comment_dict == None):
+            break
 
-    print_dict(comment_dict)
-    print_dict(molecular_dict)
-    print_dict(atom_dict)
-    print_dict(bond_dict)
-    print_dict(substructure_dict)
+        molecular_dict = read_molecule(session, stream)
+        atom_dict = read_atom(session, stream, int(molecular_dict["num_atoms"]))
+        bond_dict = read_bond(session, stream, int(molecular_dict["num_bonds"]))
+        substructure_dict = read_substructure(session, stream)
 
+        print_dict(comment_dict)
+        print_dict(molecular_dict)
+        print_dict(atom_dict)
+        print_dict(bond_dict)
+        print_dict(substructure_dict)
+    stream.close()
     # index2atom = {}
     # for n in range(0, len(molecular_dict["num_atoms"])):
     #         atom_index = int(parts[0])
@@ -63,9 +67,9 @@ def _read_block(session, stream):
     #     a2 = index2atom[index2]
     #     s.newBond(a1, a2)
 
-    for _ in range(10):
-        test_read = stream.readline().strip()
-        print("test read: " , test_read)    
+    # for _ in range(10):
+    #     test_read = stream.readline().strip()
+    #     print("test read: " , test_read)
 
     # while len(test_read) == 0:
     #     if test_read is None:
@@ -78,7 +82,7 @@ def _read_block(session, stream):
 
 
 
-    stream.close() # @HANNAH w/o this line, python won't stop running,
+    # stream.close() # @HANNAH w/o this line, python won't stop running,
                    # and thats why your mac overheated, especially
                    # if you ran this file multiple times
     
@@ -100,6 +104,10 @@ def read_comments(session, stream):
 
     comment = stream.readline()
 
+
+
+
+
     while comment[0] == "#":
         line = comment.replace("#", "")
         parts = line.split(":")
@@ -120,7 +128,7 @@ def read_comments(session, stream):
 
     return comment_dict
 
-def read_molecule(sesson, stream):
+def read_molecule(session, stream):
     """Parses molecule section"""
 
     import ast
@@ -221,7 +229,14 @@ def read_substructure(session, stream):
 
     return substructure_dict
 
-
+    ### TEST PURPOSE ONLY ####
+    # def test_run(file_name):
+    #     import os
+    #     file = os.path.join(os.getcwd(), 'example_files/ras.mol2'.format(file_name))
+    #     # print(open(file, "r").read())
+    #     _read_block(None, open(file, "r"))
+    #
+    # test_run("ras(short).mol2")
 
 ### TEST PURPOSE ONLY ####
 def test_run(file_name):
