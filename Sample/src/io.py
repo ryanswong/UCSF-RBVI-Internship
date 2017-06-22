@@ -238,8 +238,12 @@ def build_residues(s, substructure_dict):
         print("residue: ", residue)
 =======
     for s_index in substructure_dict:
+<<<<<<< HEAD
         residue = s.new_residue(substructure_dict["subst_name"], substructure_dict["chain"], substructure_dict["subst_id"])
 >>>>>>> 5bae4e03c16743a1d2a27177aa05289fc4809dc5
+=======
+        residue = s.new_residue(substructure_dict["subst_name"][:4], "yay", int(substructure_dict["subst_id"]))
+>>>>>>> 9489cb04fd3a6e01cf951329260ea1914f336498
         csd.update({s_index : residue})
     return csd
 
