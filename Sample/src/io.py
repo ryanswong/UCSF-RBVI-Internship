@@ -58,11 +58,7 @@ def _read_block(session, stream):
     print(type(s))
     print("CHECKPOINT")
     csd = build_residues(s, substructure_dict)
-<<<<<<< HEAD
-    # cad = build_atoms(s, csd, atom_dict)
-=======
     cad = build_atoms(s, csd, atom_dict)
->>>>>>> 5bae4e03c16743a1d2a27177aa05289fc4809dc5
     # build_bonds(s, cad, bond_dict)
 
     return True
