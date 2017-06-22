@@ -74,8 +74,8 @@ def _read_block(session, stream):
 
 
 
-    # s = AtomicStructure(session)
-    # return s
+    s = AtomicStructure(session)
+    return s
 
 
 def read_comments(session, stream):
@@ -110,11 +110,6 @@ def read_comments(session, stream):
             except (ValueError, SyntaxError):
                 comment_dict[str(parts[0])] = str(parts[1])
 
-
-        try: 
-            int("              LOVE YA ALEX")
-        except SyntaxError:
-            raise ("LOL")
         return comment_dict
 
 def read_molecule(session, stream):
@@ -198,16 +193,15 @@ def read_bond(session, stream, bond_count):
         bond_dict[str(parts[0])] = parts[1:3]
 
     return bond_dict
+
 def read_substructure(session, stream):
     """parses substructure section"""
 
     while "@<TRIPOS>SUBSTRUCTURE" not in stream.readline():
         pass
 
-
-
     substructure_dict = {}
-    substructure_labels = ["subst_id", "subst_name", "root_atom", "subst_type",\
+    substructure_labels = ["subst_id", "subst_name", "root_atom", "subst_type",
     "dict_type", "chain", "sub_type", "inter_bonds", "status", "comment"]
 
 
@@ -217,6 +211,39 @@ def read_substructure(session, stream):
         substructure_dict.update(dict(zip(substructure_labels, substructure_line)))
 
     return substructure_dict
+
+def build_residues(s, substructure_dict):
+    #create new chimerax substructure dictionary
+    csd = {}
+    #csd will be something like {1: <residue>}
+    for s_index in substructure_dict:
+        residue = s.newResidue(substructure_dict[s_index][1], substructure_dict[s_index][2])???????????
+        csd.update({s_index : residue})
+    return csd
+
+
+def build_atoms(s, csd, atom_dict):
+    cad = {}
+    for key in atom_dict:
+        name = atom_dict[key][0]
+        element = atom_dict[key][4]
+        if "." in element:
+            split_element = element.split(".")
+            element = split_element[0]
+        new_atom = s.newAtom(name, element)
+        cad.update({key : new_atom})
+
+    return cad
+
+
+def build_bonds(s, cad, bond_dict):
+    for key in bond_dict:
+        atom1 = bond_dict[key][0]
+        atom2 = bond_dict[key][1]
+        s.newBond(atom1, atom2)
+
+
+
 
     ### TEST PURPOSE ONLY ####
     # def test_run(file_name):
