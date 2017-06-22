@@ -28,7 +28,7 @@ def print_dict(dict):
 
 
 def _read_block(session, stream):
-    """fucntion that calls subfucntions that each read a specific section of the mol2 file"""
+    """function that calls subfunctions that each read a specific section of the mol2 file"""
     # First section should be commented out
     # Second section: "@<TRIPOS>MOLECULE"
     # Third section: "@<TRIPOS>ATOM"
@@ -112,7 +112,7 @@ def read_comments(session, stream):
 
     return comment_dict
 
-def read_molecule(sesson, stream):
+def read_molecule(session, stream):
     """Parses molecule section"""
 
     import ast
@@ -213,7 +213,14 @@ def read_substructure(session, stream):
 
     return substructure_dict
 
-
+    ### TEST PURPOSE ONLY ####
+    # def test_run(file_name):
+    #     import os
+    #     file = os.path.join(os.getcwd(), 'example_files/ras.mol2'.format(file_name))
+    #     # print(open(file, "r").read())
+    #     _read_block(None, open(file, "r"))
+    #
+    # test_run("ras(short).mol2")
 
 ### TEST PURPOSE ONLY ####
 # def test_run(file_name):
