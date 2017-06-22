@@ -53,9 +53,10 @@ def _read_block(session, stream):
     print_dict(substructure_dict)
 
 
-    build_atoms(s, csd, atom_dict)
+    s = AtomicStructure(session)
+    csd = build_residues(s, substructure_dict)
+    cad = build_atoms(s, csd, atom_dict)
     build_bonds(s, cad, bond_dict)
-    build_residues(s, substructure_dict)
 
     return True
 
@@ -79,7 +80,6 @@ def _read_block(session, stream):
 
 
 
-    # s = AtomicStructure(session)
     # return s
 
 
@@ -221,11 +221,14 @@ def build_residues(s, substructure_dict):
     #create new chimerax substructure dictionary
     csd = {}
     #csd will be something like {1: <residue>}
-    for s_index in substructure_dict:
-        residue = s.newResidue(substructure_dict[s_index][1],\
-        substructure_dict[s_index][2])
-        csd.update({s_index : residue})
-    return csd
+
+    # print(substructure_dict)
+    # for s_index in substructure_dict:
+    #     print(s_index)
+    #     residue = s.newResidue(substructure_dict[s_index][1],\
+    #     substructure_dict[s_index][2])
+    #     csd.update({s_index : residue})
+    # return csd
 
 
 def build_atoms(s, csd, atom_dict):
