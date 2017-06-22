@@ -7,6 +7,5 @@ ChimeraX_Sample.egg-info/requires.txt
 ChimeraX_Sample.egg-info/top_level.txt
 src/__init__.py
 src/cmd.py
-src/io(copy).py
 src/io.py
 src/tool.py
