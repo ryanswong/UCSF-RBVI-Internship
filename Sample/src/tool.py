@@ -1,7 +1,6 @@
 # vim: set expandtab shiftwidth=4 softtabstop=4:
 
 from chimerax.core.tools import ToolInstance
-from chimerax.core.logger import PlainTextLog
 
 
 class SampleTool(ToolInstance):
@@ -76,27 +75,3 @@ class SampleTool(ToolInstance):
                 js = ('document.getElementById("output").innerHTML = %s'
                       % repr(html))
                 self.html_view.page().runJavaScript(js)
-
-
-class CaptureLog(PlainTextLog):
-
-    excludes_other_logs = True
-
-    def __init__(self, logger):
-        super().__init__()
-        self.msgs = []
-        self.logger = logger
-
-    def __enter__(self):
-        self.logger.add_log(self)
-        return self
-
-    def __exit__(self, *exc_info):
-        self.logger.remove_log(self)
-
-    def log(self, level, msg):
-        self.msgs.append(msg)
-        return True
-
-    def getvalue(self):
-        return ''.join(self.msgs)

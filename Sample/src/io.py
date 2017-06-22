@@ -74,8 +74,8 @@ def _read_block(session, stream):
 
 
 
-    # s = AtomicStructure(session)
-    # return s
+    s = AtomicStructure(session)
+    return s
 
 
 def read_comments(session, stream):
@@ -110,7 +110,7 @@ def read_comments(session, stream):
             except (ValueError, SyntaxError):
                 comment_dict[str(parts[0])] = str(parts[1])
 
-    return comment_dict 
+    return comment_dict
 
 def read_molecule(session, stream):
     """Parses molecule section"""
@@ -193,6 +193,7 @@ def read_bond(session, stream, bond_count):
         bond_dict[str(parts[0])] = parts[1:3]
 
     return bond_dict
+
 def read_substructure(session, stream):
     """parses substructure section"""
 
@@ -202,7 +203,7 @@ def read_substructure(session, stream):
 
 
     substructure_dict = {}
-    substructure_labels = ["subst_id", "subst_name", "root_atom", "subst_type",\
+    substructure_labels = ["subst_id", "subst_name", "root_atom", "subst_type",
     "dict_type", "chain", "sub_type", "inter_bonds", "status", "comment"]
 
 
