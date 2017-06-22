@@ -58,7 +58,11 @@ def _read_block(session, stream):
     print(type(s))
     print("CHECKPOINT")
     csd = build_residues(s, substructure_dict)
+<<<<<<< HEAD
     # cad = build_atoms(s, csd, atom_dict)
+=======
+    cad = build_atoms(s, csd, atom_dict)
+>>>>>>> 5bae4e03c16743a1d2a27177aa05289fc4809dc5
     # build_bonds(s, cad, bond_dict)
 
     return True
@@ -83,7 +87,7 @@ def _read_block(session, stream):
 
 
 
-    # return s
+    return s
 
 
 def read_comments(session, stream):
@@ -225,17 +229,23 @@ def build_residues(s, substructure_dict):
     csd = {}
     # csd will be something like {1: <residue>}
 
+<<<<<<< HEAD
     print("substucture: ", substructure_dict)
     for s_index in substructure_dict:
         print("checkpoint: ", s_index)
         residue = s.new_residue(substructure_dict[s_index][1],\
         substructure_dict[s_index][2])
         print("residue: ", residue)
+=======
+    for s_index in substructure_dict:
+        residue = s.new_residue(substructure_dict["subst_name"], substructure_dict["chain"], substructure_dict["subst_id"])
+>>>>>>> 5bae4e03c16743a1d2a27177aa05289fc4809dc5
         csd.update({s_index : residue})
     return csd
 
 
 def build_atoms(s, csd, atom_dict):
+    ################### ADD ATOM TO RESIDUE
     cad = {}
     for key in atom_dict:
         name = atom_dict[key][0]
@@ -243,7 +253,7 @@ def build_atoms(s, csd, atom_dict):
         if "." in element:
             split_element = element.split(".")
             element = split_element[0]
-        new_atom = s.newAtom(name, element)
+        new_atom = s.new_atom(name, element)
         cad.update({key : new_atom})
 
     return cad
@@ -253,8 +263,7 @@ def build_bonds(s, cad, bond_dict):
     for key in bond_dict:
         atom1 = bond_dict[key][0]
         atom2 = bond_dict[key][1]
-        s.newBond(atom1, atom2)
-        print(s.newBond)
+        s.new_bond(atom1, atom2)
 
 
 
@@ -268,5 +277,9 @@ def build_bonds(s, cad, bond_dict):
 #     # print(open(file, "r").read())
 #     with open(file, "r") as stream:
 #         open_mol2(None, stream, file)
+<<<<<<< HEAD
 
+=======
+#
+>>>>>>> 5bae4e03c16743a1d2a27177aa05289fc4809dc5
 # test_run("ras.mol2")
