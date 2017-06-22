@@ -245,21 +245,14 @@ def build_bonds(s, cad, bond_dict):
 
 
 
-    ### TEST PURPOSE ONLY ####
-    # def test_run(file_name):
-    #     import os
-    #     file = os.path.join(os.getcwd(), 'example_files/ras.mol2'.format(file_name))
-    #     # print(open(file, "r").read())
-    #     _read_block(None, open(file, "r"))
-    #
-    # test_run("ras(short).mol2")
 
-### TEST PURPOSE ONLY ####
-# def test_run(file_name):
-#     import os
-#     file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
-#     # print(open(file, "r").read())
-#     with open(file, "r") as stream:
-#         open_mol2(None, stream, file)
 
-# test_run(".mol2")
+## TEST PURPOSE ONLY ####
+def test_run(file_name):
+    import os
+    file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
+    # print(open(file, "r").read())
+    with open(file, "r") as stream:
+        open_mol2(None, stream, file)
+
+test_run("ras.mol2")
