@@ -52,7 +52,7 @@ def _read_block(session, stream):
     print_dict(bond_dict)
     print_dict(substructure_dict)
 
-    return True
+    # return True
 
     # index2atom = {}
     # for n in range(0, len(molecular_dict["num_atoms"])):
@@ -119,10 +119,10 @@ def read_molecule(session, stream):
     while "@<TRIPOS>MOLECULE" not in stream.readline():
         pass
     molecular_dict = {}
-    mol_lables = ["mol_name", ["num_atoms", "num_bonds", "num_subst", "num_feat", "num_sets"],\
+    mol_labels = ["mol_name", ["num_atoms", "num_bonds", "num_subst", "num_feat", "num_sets"],\
     "mol_type", "charge_type", "status_bits"]
 
-    for label in mol_lables:
+    for label in mol_labels:
         molecule_line = stream.readline().split()
         try:
             if all(isinstance(ast.literal_eval(item), int) for item in molecule_line):
