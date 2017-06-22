@@ -223,13 +223,13 @@ def build_residues(s, substructure_dict):
     #csd will be something like {1: <residue>}
 
     for s_index in substructure_dict:
-        residue = s.newResidue(substructure_dict[s_index][1],
-        substructure_dict[s_index][2])
+        residue = s.new_residue(substructure_dict["subst_name"], substructure_dict["chain"], substructure_dict["subst_id"])
         csd.update({s_index : residue})
     return csd
 
 
 def build_atoms(s, csd, atom_dict):
+    ################### ADD ATOM TO RESIDUE
     cad = {}
     for key in atom_dict:
         name = atom_dict[key][0]
