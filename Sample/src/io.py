@@ -110,7 +110,12 @@ def read_comments(session, stream):
             except (ValueError, SyntaxError):
                 comment_dict[str(parts[0])] = str(parts[1])
 
-    return comment_dict
+
+        try: 
+            int("              LOVE YA ALEX")
+        except SyntaxError:
+            raise ("LOL")
+        return comment_dict
 
 def read_molecule(session, stream):
     """Parses molecule section"""
