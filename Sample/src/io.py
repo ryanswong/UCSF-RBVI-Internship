@@ -11,11 +11,11 @@ def open_mol2(session, stream, name):
         print(s)
         if not s:
             break
-    #     structures.append(s)
-    #     atoms += s.num_atoms
-    #     bonds += s.num_bonds
+        structures.append(s)
+        atoms += s.num_atoms
+        bonds += s.num_bonds
     status = ("Opened mol2 file containing {} structures ({} atoms, {} bonds)".format
-              (len(structures), 0, 0))
+              (len(structures), atoms, bonds))
     return structures, status
 
 
@@ -59,9 +59,8 @@ def _read_block(session, stream):
     print("CHECKPOINT")
     csd = build_residues(s, substructure_dict)
     cad = build_atoms(s, csd, atom_dict)
-    # build_bonds(s, cad, bond_dict)
+    build_bonds(s, cad, bond_dict)
 
-    return True
 
     # index2atom = {}
     # for n in range(0, len(molecular_dict["num_atoms"])):
@@ -225,27 +224,15 @@ def build_residues(s, substructure_dict):
     csd = {}
     # csd will be something like {1: <residue>}
 
-<<<<<<< HEAD
-    print("substucture: ", substructure_dict)
     for s_index in substructure_dict:
-        print("checkpoint: ", s_index)
-        residue = s.new_residue(substructure_dict[s_index][1],\
-        substructure_dict[s_index][2])
-        print("residue: ", residue)
-=======
-    for s_index in substructure_dict:
-<<<<<<< HEAD
-        residue = s.new_residue(substructure_dict["subst_name"], substructure_dict["chain"], substructure_dict["subst_id"])
->>>>>>> 5bae4e03c16743a1d2a27177aa05289fc4809dc5
-=======
         residue = s.new_residue(substructure_dict["subst_name"][:4], "yay", int(substructure_dict["subst_id"]))
->>>>>>> 9489cb04fd3a6e01cf951329260ea1914f336498
         csd.update({s_index : residue})
     return csd
 
 
 def build_atoms(s, csd, atom_dict):
     ################### ADD ATOM TO RESIDUE
+    from numpy import array, float64
     cad = {}
     for key in atom_dict:
         name = atom_dict[key][0]
@@ -253,7 +240,11 @@ def build_atoms(s, csd, atom_dict):
         if "." in element:
             split_element = element.split(".")
             element = split_element[0]
+        xyz = [float(n) for n in atom_dict[key][1:4]]
         new_atom = s.new_atom(name, element)
+        new_atom.coord = array(xyz, dtype=float64)
+        # csd[key].add_atom(new_atom)
+
         cad.update({key : new_atom})
 
     return cad
@@ -261,9 +252,11 @@ def build_atoms(s, csd, atom_dict):
 
 def build_bonds(s, cad, bond_dict):
     for key in bond_dict:
-        atom1 = bond_dict[key][0]
-        atom2 = bond_dict[key][1]
-        s.new_bond(atom1, atom2)
+        atom1index = bond_dict[key][0]
+        atom2index = bond_dict[key][1]
+        a1 = cad[atom1index]
+        a2 = cad[atom2index]
+        s.new_bond(a1, a2)
 
 
 
@@ -277,9 +270,5 @@ def build_bonds(s, cad, bond_dict):
 #     # print(open(file, "r").read())
 #     with open(file, "r") as stream:
 #         open_mol2(None, stream, file)
-<<<<<<< HEAD
-
-=======
 #
->>>>>>> 5bae4e03c16743a1d2a27177aa05289fc4809dc5
 # test_run("ras.mol2")
