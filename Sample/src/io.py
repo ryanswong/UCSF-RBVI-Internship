@@ -225,21 +225,8 @@ def build_residues(s, substructure_dict):
     csd = {}
     # csd will be something like {1: <residue>}
 
-<<<<<<< HEAD
-    print("substucture: ", substructure_dict)
     for s_index in substructure_dict:
-        print("checkpoint: ", s_index)
-        residue = s.new_residue(substructure_dict[s_index][1],\
-        substructure_dict[s_index][2])
-        print("residue: ", residue)
-=======
-    for s_index in substructure_dict:
-<<<<<<< HEAD
-        residue = s.new_residue(substructure_dict["subst_name"], substructure_dict["chain"], substructure_dict["subst_id"])
->>>>>>> 5bae4e03c16743a1d2a27177aa05289fc4809dc5
-=======
         residue = s.new_residue(substructure_dict["subst_name"][:4], "yay", int(substructure_dict["subst_id"]))
->>>>>>> 9489cb04fd3a6e01cf951329260ea1914f336498
         csd.update({s_index : residue})
     return csd
 
@@ -277,9 +264,4 @@ def build_bonds(s, cad, bond_dict):
 #     # print(open(file, "r").read())
 #     with open(file, "r") as stream:
 #         open_mol2(None, stream, file)
-<<<<<<< HEAD
-
-=======
-#
->>>>>>> 5bae4e03c16743a1d2a27177aa05289fc4809dc5
 # test_run("ras.mol2")
