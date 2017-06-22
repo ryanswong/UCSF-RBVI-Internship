@@ -19,6 +19,7 @@ Implements command "sample count" to report number of atoms and bonds.
     <Category name="General"/>
   </Categories>
 
+<AdditionalPackages/>
 
   <!-- Dependencies on other ChimeraX/Python packages -->
   <Dependencies>

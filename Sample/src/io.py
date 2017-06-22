@@ -54,9 +54,12 @@ def _read_block(session, stream):
 
 
     s = AtomicStructure(session)
+
+    print(type(s))
+    print("CHECKPOINT")
     csd = build_residues(s, substructure_dict)
-    cad = build_atoms(s, csd, atom_dict)
-    build_bonds(s, cad, bond_dict)
+    # cad = build_atoms(s, csd, atom_dict)
+    # build_bonds(s, cad, bond_dict)
 
     return True
 
@@ -220,15 +223,16 @@ def read_substructure(session, stream):
 def build_residues(s, substructure_dict):
     #create new chimerax substructure dictionary
     csd = {}
-    #csd will be something like {1: <residue>}
+    # csd will be something like {1: <residue>}
 
-    # print(substructure_dict)
-    # for s_index in substructure_dict:
-    #     print(s_index)
-    #     residue = s.newResidue(substructure_dict[s_index][1],\
-    #     substructure_dict[s_index][2])
-    #     csd.update({s_index : residue})
-    # return csd
+    print("substucture: ", substructure_dict)
+    for s_index in substructure_dict:
+        print("checkpoint: ", s_index)
+        residue = s.new_residue(substructure_dict[s_index][1],\
+        substructure_dict[s_index][2])
+        print("residue: ", residue)
+        csd.update({s_index : residue})
+    return csd
 
 
 def build_atoms(s, csd, atom_dict):
@@ -257,12 +261,12 @@ def build_bonds(s, cad, bond_dict):
 
 
 
-## TEST PURPOSE ONLY ####
-def test_run(file_name):
-    import os
-    file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
-    # print(open(file, "r").read())
-    with open(file, "r") as stream:
-        open_mol2(None, stream, file)
+# ## TEST PURPOSE ONLY ####
+# def test_run(file_name):
+#     import os
+#     file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
+#     # print(open(file, "r").read())
+#     with open(file, "r") as stream:
+#         open_mol2(None, stream, file)
 
-test_run("ras.mol2")
+# test_run("ras.mol2")
