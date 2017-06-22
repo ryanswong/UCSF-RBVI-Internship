@@ -56,7 +56,7 @@ def _read_block(session, stream):
     s = AtomicStructure(session)
     csd = build_residues(s, substructure_dict)
     cad = build_atoms(s, csd, atom_dict)
-    build_bonds(s, cad, bond_dict)
+    # build_bonds(s, cad, bond_dict)
 
     return True
 
@@ -80,7 +80,7 @@ def _read_block(session, stream):
 
 
 
-    # return s
+    return s
 
 
 def read_comments(session, stream):
@@ -222,13 +222,11 @@ def build_residues(s, substructure_dict):
     csd = {}
     #csd will be something like {1: <residue>}
 
-    # print(substructure_dict)
-    # for s_index in substructure_dict:
-    #     print(s_index)
-    #     residue = s.newResidue(substructure_dict[s_index][1],\
-    #     substructure_dict[s_index][2])
-    #     csd.update({s_index : residue})
-    # return csd
+    for s_index in substructure_dict:
+        residue = s.newResidue(substructure_dict[s_index][1],
+        substructure_dict[s_index][2])
+        csd.update({s_index : residue})
+    return csd
 
 
 def build_atoms(s, csd, atom_dict):
@@ -239,7 +237,7 @@ def build_atoms(s, csd, atom_dict):
         if "." in element:
             split_element = element.split(".")
             element = split_element[0]
-        new_atom = s.newAtom(name, element)
+        new_atom = s.new_atom(name, element)
         cad.update({key : new_atom})
 
     return cad
@@ -249,20 +247,19 @@ def build_bonds(s, cad, bond_dict):
     for key in bond_dict:
         atom1 = bond_dict[key][0]
         atom2 = bond_dict[key][1]
-        s.newBond(atom1, atom2)
-        print(s.newBond)
+        s.new_bond(atom1, atom2)
 
 
 
 
 
 
-## TEST PURPOSE ONLY ####
-def test_run(file_name):
-    import os
-    file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
-    # print(open(file, "r").read())
-    with open(file, "r") as stream:
-        open_mol2(None, stream, file)
-
-test_run("ras.mol2")
+# ## TEST PURPOSE ONLY ####
+# def test_run(file_name):
+#     import os
+#     file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
+#     # print(open(file, "r").read())
+#     with open(file, "r") as stream:
+#         open_mol2(None, stream, file)
+#
+# test_run("ras.mol2")
