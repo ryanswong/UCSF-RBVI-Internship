@@ -223,7 +223,7 @@ def read_molecule(session, stream):
 
 
 def read_atom(session, stream, atom_count):
-    """parses atom section"""
+    """parses atom section"""   
 
     import ast
     while "@<TRIPOS>ATOM" not in stream.readline():
