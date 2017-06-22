@@ -52,7 +52,12 @@ def _read_block(session, stream):
     print_dict(bond_dict)
     print_dict(substructure_dict)
 
-    # return True
+
+    build_atoms(s, csd, atom_dict)
+    build_bonds(s, cad, bond_dict)
+    build_residues(s, substructure_dict)
+
+    return True
 
     # index2atom = {}
     # for n in range(0, len(molecular_dict["num_atoms"])):
@@ -74,8 +79,8 @@ def _read_block(session, stream):
 
 
 
-    s = AtomicStructure(session)
-    return s
+    # s = AtomicStructure(session)
+    # return s
 
 
 def read_comments(session, stream):
@@ -217,7 +222,8 @@ def build_residues(s, substructure_dict):
     csd = {}
     #csd will be something like {1: <residue>}
     for s_index in substructure_dict:
-        residue = s.newResidue(substructure_dict[s_index][1], substructure_dict[s_index][2])???????????
+        residue = s.newResidue(substructure_dict[s_index][1],\
+        substructure_dict[s_index][2])
         csd.update({s_index : residue})
     return csd
 
@@ -241,6 +247,7 @@ def build_bonds(s, cad, bond_dict):
         atom1 = bond_dict[key][0]
         atom2 = bond_dict[key][1]
         s.newBond(atom1, atom2)
+        print(s.newBond)
 
 
 
