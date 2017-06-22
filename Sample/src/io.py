@@ -110,7 +110,7 @@ def read_comments(session, stream):
             except (ValueError, SyntaxError):
                 comment_dict[str(parts[0])] = str(parts[1])
 
-        return comment_dict
+    return comment_dict
 
 def read_molecule(session, stream):
     """Parses molecule section"""
@@ -200,6 +200,8 @@ def read_substructure(session, stream):
     while "@<TRIPOS>SUBSTRUCTURE" not in stream.readline():
         pass
 
+
+
     substructure_dict = {}
     substructure_labels = ["subst_id", "subst_name", "root_atom", "subst_type",
     "dict_type", "chain", "sub_type", "inter_bonds", "status", "comment"]
@@ -212,54 +214,14 @@ def read_substructure(session, stream):
 
     return substructure_dict
 
-def build_residues(s, substructure_dict):
-    #create new chimerax substructure dictionary
-    csd = {}
-    #csd will be something like {1: <residue>}
-    for s_index in substructure_dict:
-        residue = s.newResidue(substructure_dict[s_index][1], substructure_dict[s_index][2])???????????
-        csd.update({s_index : residue})
-    return csd
 
 
-def build_atoms(s, csd, atom_dict):
-    cad = {}
-    for key in atom_dict:
-        name = atom_dict[key][0]
-        element = atom_dict[key][4]
-        if "." in element:
-            split_element = element.split(".")
-            element = split_element[0]
-        new_atom = s.newAtom(name, element)
-        cad.update({key : new_atom})
+## TEST PURPOSE ONLY ####
 
-    return cad
+def test_run(file_name):
+    import os
+    file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
+    with open(file, "r") as stream:
+        open_mol2(None, stream, file)
 
-
-def build_bonds(s, cad, bond_dict):
-    for key in bond_dict:
-        atom1 = bond_dict[key][0]
-        atom2 = bond_dict[key][1]
-        s.newBond(atom1, atom2)
-
-
-
-
-    ### TEST PURPOSE ONLY ####
-    # def test_run(file_name):
-    #     import os
-    #     file = os.path.join(os.getcwd(), 'example_files/ras.mol2'.format(file_name))
-    #     # print(open(file, "r").read())
-    #     _read_block(None, open(file, "r"))
-    #
-    # test_run("ras(short).mol2")
-
-### TEST PURPOSE ONLY ####
-# def test_run(file_name):
-#     import os
-#     file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
-#     # print(open(file, "r").read())
-#     with open(file, "r") as stream:
-#         open_mol2(None, stream, file)
-
-# test_run(".mol2")
+test_run("ras.mol2")
