@@ -270,8 +270,4 @@ def build_bonds(s, cad, bond_dict):
 #     # print(open(file, "r").read())
 #     with open(file, "r") as stream:
 #         open_mol2(None, stream, file)
-<<<<<<< HEAD
-#
-=======
->>>>>>> 51753f4e692f9cca0bac7d52d738b4620ccfe219
 # test_run("ras.mol2")
