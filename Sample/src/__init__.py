@@ -8,8 +8,8 @@ class _MyAPI(BundleAPI):
     # Override method for starting tool
     @staticmethod
     def start_tool(session, tool_name, **kw):
-        from .tool import SampleTool
-        return SampleTool(session, tool_name, **kw)
+        from .tool import ViewDockTool
+        return ViewDockTool(session, tool_name, **kw)
 
     # Override method for registering commands
     @staticmethod

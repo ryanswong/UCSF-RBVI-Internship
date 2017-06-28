@@ -191,7 +191,7 @@ def build_atoms(s, csd, atom_dict):
         xyz = [float(n) for n in atom_dict[key][1:4]]
         new_atom = s.new_atom(name, element)
         new_atom.coord = array(xyz, dtype=float64)
-        # new_atom.serial_number = int(key)
+        new_atom.serial_number = int(key)
 
         # adding ne atom to subst_id 
         csd[atom_dict[key][5]].add_atom(new_atom)

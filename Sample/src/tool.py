@@ -3,19 +3,22 @@
 from chimerax.core.tools import ToolInstance
 
 
-class SampleTool(ToolInstance):
+class ViewDockTool(ToolInstance):
 
     SESSION_ENDURING = False
     SESSION_SKIP = True         # No session saving for now
-    CUSTOM_SCHEME = "sample"    # HTML scheme for custom links
-    display_name = "Sample Tool"
+    CUSTOM_SCHEME = "viewdockx"    # HTML scheme for custom links
+    display_name = "ViewDockX"
 
-    def __init__(self, session, tool_name):
+    def __init__(self, session, tool_name, structures = None):
         # Standard template stuff for intializing tool
         super().__init__(session, tool_name)
         from chimerax.core.ui.gui import MainToolWindow
         self.tool_window = MainToolWindow(self)
         self.tool_window.manage(placement="side")
+        if structures is None:
+            structures = session.models.list(type=AtomicStructure)
+        self.structures = structures
         parent = self.tool_window.ui_area
 
         # Create an HTML viewer for our user interface.
@@ -41,16 +44,19 @@ class SampleTool(ToolInstance):
     def _update_models(self, trigger=None, trigger_data=None):
         # Called to update page with current list of models
         from chimerax.core.atomic import AtomicStructure
-        html = ["<h2>Sample Tool</h2>", "<ul>"]
+        html = ['<script type="text/javascript" src="/path/to/jquery-latest.js"></script>', 
+        '<script type="text/javascript" src="/path/to/jquery.tablesorter.js"></script>', "<h2>ViewDockX</h2>", "<ul>"]
         from urllib.parse import quote
-        for m in self.session.models.list(type=AtomicStructure):
+        for m in self.structures:
             html.append("<li><a href=\"%s:%s\">%s - %s</a></li>" %
-                        (self.CUSTOM_SCHEME, quote(m.atomspec()),
+                        (self.CUSTOM_SCHEME, quote(m.atomspec()), #"viewodck:#1.1"
                          m.id_string(), m.name))
-        html.extend(["</ul>",
-                     "<h3>Output : </h3>",
+        html.append("</ul>")
 
-                     '<div id="output">Counts appear here</div>'])
+        # html.extend(["</ul>",
+        #              "<h3>Output : </h3>",
+
+        #              '<div id="output">Counts appear here</div>'])
         self.html_view.setHtml('\n'.join(html))
 
     def _navigate(self, info):
@@ -67,12 +73,12 @@ class SampleTool(ToolInstance):
     def _run(self, atomspec):
         # Execute "sample count" command for given atomspec
         from chimerax.core.commands import run
-        from chimerax.core.logger import StringPlainTextLog
-        with StringPlainTextLog(self.session.logger) as log:
-            try:
-                run(self.session, "sample count " + atomspec)
-            finally:
-                html = "<pre>\n%s</pre>" % log.getvalue()
-                js = ('document.getElementById("output").innerHTML = %s'
-                      % repr(html))
-                self.html_view.page().runJavaScript(js)
+        run(self.session, "select " + atomspec)
+        # from chimerax.core.logger import StringPlainTextLog
+        # with StringPlainTextLog(self.session.logger) as log:
+        #     try:
+        #     finally:
+        #         html = "<pre>\n%s</pre>" % log.getvalue()
+        #         js = ('document.getElementById("output").innerHTML = %s'
+        #               % repr(html))
+        #         self.html_view.page().runJavaScript(js)
