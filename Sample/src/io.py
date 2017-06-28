@@ -239,7 +239,7 @@ def build_atoms(s, csd, atom_dict):
         xyz = [float(n) for n in atom_dict[key][1:4]]
         new_atom = s.new_atom(name, element)
         new_atom.coord = array(xyz, dtype=float64)
-        csd[atom_dict[key][5]].add_atom(new_atom)
+        csd[int(atom_dict[key][5])].add_atom(new_atom)
 
         cad[key] = new_atom
 
@@ -248,8 +248,8 @@ def build_atoms(s, csd, atom_dict):
 
 def build_bonds(s, cad, bond_dict):
     for key in bond_dict:
-        atom1index = bond_dict[key][0]
-        atom2index = bond_dict[key][1]
+        atom1index = int(bond_dict[key][0])
+        atom2index = int(bond_dict[key][1])
         a1 = cad[atom1index]
         a2 = cad[atom2index]
         s.new_bond(a1, a2)
