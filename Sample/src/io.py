@@ -223,7 +223,7 @@ def build_residues(s, substructure_dict):
 
     for s_index in substructure_dict:
         residue = s.new_residue(substructure_dict["subst_name"][:4], "yay", int(substructure_dict["subst_id"]))
-        csd.update({s_index : residue})
+        csd[s_index] = residue
     return csd
 
 
@@ -239,7 +239,7 @@ def build_atoms(s, csd, atom_dict):
         xyz = [float(n) for n in atom_dict[key][1:4]]
         new_atom = s.new_atom(name, element)
         new_atom.coord = array(xyz, dtype=float64)
-        csd[int(atom_dict[key][5])].add_atom(new_atom)
+        csd[atom_dict[key][5]].add_atom(new_atom)
 
         cad[key] = new_atom
 
