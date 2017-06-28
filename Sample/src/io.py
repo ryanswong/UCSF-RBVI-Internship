@@ -18,14 +18,6 @@ def open_mol2(session, stream, name):
     return structures, status
 
 
-
-def print_dict(comment, dict):
-    print(comment)
-    for key, value in dict.items():
-        print(repr(key), ":", repr(value))
-    print()
-
-
 def _read_block(session, stream):
     """function that calls subfunctions that each read a specific section of the mol2 file"""
     # First section should be commented out
@@ -45,12 +37,6 @@ def _read_block(session, stream):
     bond_dict = read_bond(session, stream, int(molecular_dict["num_bonds"]))
     substructure_dict = read_substructure(session, stream, int(molecular_dict["num_subst"])) #pass in # of substructures
 
-    print_dict("COMMENT DICTIONARY: ", comment_dict)
-    print_dict("MOLECULE DICTIONARY: ", molecular_dict)
-    print_dict("ATOM DICTIONARY: ", atom_dict)
-    print_dict("BOND DICTIONARY: ", bond_dict)
-    print_dict("SUBSTRUCTURE DICTIONARY: ", substructure_dict)
-
 
     s = AtomicStructure(session)
 
@@ -58,20 +44,7 @@ def _read_block(session, stream):
     cad = build_atoms(s, csd, atom_dict)
     build_bonds(s, cad, bond_dict)
 
-    from pprint import pprint
-
-
-
-
-
-    for k, v in csd.items():
-        print("printing csd: ", k, ":", v)
-    for k, v in cad.items():
-        print("printing cad: ", k, ":", v)
-
-
-    # pprint("printing CSD: ", (csd))
-    # pprint("printing CAD: ", (cad))
+    s.viewdock_comment = comment_dict
 
     return s
 
@@ -148,7 +121,6 @@ def read_atom(session, stream, atom_count):
             print("error: not enough entries on line: ", atom_line)
             return None
 
-        # val_list = []
         atom_dict[(parts[0])] = parts[1:]
 
 
@@ -197,17 +169,14 @@ def read_substructure(session, stream, num_subst):
 def build_residues(s, substructure_dict):
     """ create chimeraX substructure dictionary (csd) """
     csd = {}
-    # csd will be something like {1: <residue>}
+    # csd will be something like {"1": <residue>}
 
     for s_index in substructure_dict:
 
-        # new_residue(self, residue_name, chain_id, pos, insert=' ')
-        residue = s.new_residue(substructure_dict[s_index][0][:4], str(substructure_dict[s_index][5]), int(s_index))
-        print("int(s_index): ", int(s_index), "type: ", type(int(s_index)))
-        print("substructure_dict[s_index][0][:3]: ", substructure_dict[s_index][0][:3], "type: ", type(substructure_dict[s_index][0][:3]))
-        print("str(substructure_dict[s_index][5]): ", str(substructure_dict[s_index][5]), "type: ", type(str(substructure_dict[s_index][5])))
-        print()
 
+        # new_residue(self, residue_name, chain_id, pos, insert=' ')
+
+        residue = s.new_residue(substructure_dict[s_index][0][:4], str(substructure_dict[s_index][5]), int(s_index))
         csd[s_index] = residue
     return csd
 
@@ -216,6 +185,7 @@ def build_atoms(s, csd, atom_dict):
 
     """ Creates chimeraX atom dictionary (cad)"""
     from numpy import array, float64
+
     cad = {}
     for key in atom_dict:
         name = atom_dict[key][0]
@@ -226,37 +196,25 @@ def build_atoms(s, csd, atom_dict):
         xyz = [float(n) for n in atom_dict[key][1:4]]
         new_atom = s.new_atom(name, element)
         new_atom.coord = array(xyz, dtype=float64)
+
+        # new_atom.serial_number = int(key)
+
+        # adding ne atom to subst_id 
         csd[atom_dict[key][5]].add_atom(new_atom)
 
-
         cad[key] = new_atom
-
 
     return cad
 
 
 def build_bonds(s, cad, bond_dict):
     for key in bond_dict:
-        atom1index = int(bond_dict[key][0])
-        atom2index = int(bond_dict[key][1])
-        a1 = cad[atom1index]
-        a2 = cad[atom2index]
-        s.new_bond(a1, a2)
-
-
-
-
-
-
-# ## TEST PURPOSE ONLY ####
-# def test_run(file_name):
-#     import os
-#     file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
-#     # print(open(file, "r").read())
-#     with open(file, "r") as stream:
-#         open_mol2(None, stream, file)
-
-
-# test_run("ras(short).mol2")
-
-
+        atom1index = bond_dict[key][0]
+        atom2index = bond_dict[key][1]
+        try:
+            a1 = cad[atom1index]
+            a2 = cad[atom2index]
+        except KeyError:
+            print("Error : bad atom index in bond")
+        else:
+            s.new_bond(a1, a2)
