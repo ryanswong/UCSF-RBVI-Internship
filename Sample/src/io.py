@@ -172,9 +172,6 @@ def read_atom(session, stream, atom_count):
         val_list = []
         atom_dict[str(parts[0])] = val_list
         for value in parts[1:]:
-            try:
-                val_list.append(ast.literal_eval(value))
-            except (ValueError, SyntaxError):
                 val_list.append(str(value))
 
     # PRINT TEST. DELETE LATER
@@ -231,7 +228,6 @@ def build_residues(s, substructure_dict):
 
 
 def build_atoms(s, csd, atom_dict):
-    ################### ADD ATOM TO RESIDUE
     from numpy import array, float64
     cad = {}
     for key in atom_dict:
@@ -243,9 +239,9 @@ def build_atoms(s, csd, atom_dict):
         xyz = [float(n) for n in atom_dict[key][1:4]]
         new_atom = s.new_atom(name, element)
         new_atom.coord = array(xyz, dtype=float64)
-        # csd[key].add_atom(new_atom)
+        csd[atom_dict[key][5]].add_atom(new_atom)
 
-        cad.update({key : new_atom})
+        cad[key] = new_atom
 
     return cad
 
