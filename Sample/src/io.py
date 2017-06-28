@@ -147,6 +147,7 @@ def read_atom(session, stream, atom_count):
         if len(parts) != 9:
             print("error: not enough entries on line: ", atom_line)
             return None
+<<<<<<< HEAD
         # val_list = []
         atom_dict[(parts[0])] = parts[1:]
 
@@ -154,6 +155,18 @@ def read_atom(session, stream, atom_count):
     # atom_dict would now be: 
     # {1 : ['C1', '9.4819', '36.0139', '21.8847', 'C.3', '1', 'RIBOSE_MONOPHOSPHATE', '0.0767'],
     # 2 : ['C2'....] }
+=======
+        # if not isinstance(int(parts[0]), int):
+        #     print("error: first value is needs to be an integer")
+        #     return None
+
+        val_list = []
+        atom_dict[str(parts[0])] = val_list
+        for value in parts[1:]:
+                val_list.append(str(value))
+
+    # PRINT TEST. DELETE LATER
+>>>>>>> 4ad22176a9b389067cf007d679e9f5551f78aff6
     return atom_dict
 
 def read_bond(session, stream, bond_count):
@@ -210,7 +223,10 @@ def build_residues(s, substructure_dict):
 
 
 def build_atoms(s, csd, atom_dict):
+<<<<<<< HEAD
     """ Creates chimeraX atom dictionary (cad)"""
+=======
+>>>>>>> 4ad22176a9b389067cf007d679e9f5551f78aff6
     from numpy import array, float64
     cad = {}
     for key in atom_dict:
@@ -222,11 +238,15 @@ def build_atoms(s, csd, atom_dict):
         xyz = [float(n) for n in atom_dict[key][1:4]]
         new_atom = s.new_atom(name, element)
         new_atom.coord = array(xyz, dtype=float64)
-        # csd[key].add_atom(new_atom)
+        csd[atom_dict[key][5]].add_atom(new_atom)
 
+<<<<<<< HEAD
         # ADD ATOM TO RESIDUE
         cad[key] = new_atom
         cad.update({key : new_atom})  #FIX
+=======
+        cad[key] = new_atom
+>>>>>>> 4ad22176a9b389067cf007d679e9f5551f78aff6
 
     return cad
 
@@ -251,5 +271,9 @@ def build_bonds(s, cad, bond_dict):
 #     # print(open(file, "r").read())
 #     with open(file, "r") as stream:
 #         open_mol2(None, stream, file)
+<<<<<<< HEAD
 
 # test_run("ras(short).mol2")
+=======
+# test_run("ras.mol2")
+>>>>>>> 4ad22176a9b389067cf007d679e9f5551f78aff6
