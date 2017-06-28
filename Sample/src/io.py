@@ -120,6 +120,7 @@ def read_atom(session, stream, atom_count):
         if len(parts) != 9:
             print("error: not enough entries on line: ", atom_line)
             return None
+
         atom_dict[(parts[0])] = parts[1:]
 
 
@@ -127,8 +128,6 @@ def read_atom(session, stream, atom_count):
     # {1 : ['C1', '9.4819', '36.0139', '21.8847', 'C.3', '1', 'RIBOSE_MONOPHOSPHATE', '0.0767'],
     # 2 : ['C2'....] }
 
-
-    # PRINT TEST. DELETE LATER
     return atom_dict
 
 def read_bond(session, stream, bond_count):
@@ -173,14 +172,20 @@ def build_residues(s, substructure_dict):
     # csd will be something like {"1": <residue>}
 
     for s_index in substructure_dict:
+
+
+        # new_residue(self, residue_name, chain_id, pos, insert=' ')
+
         residue = s.new_residue(substructure_dict[s_index][0][:4], str(substructure_dict[s_index][5]), int(s_index))
         csd[s_index] = residue
     return csd
 
 
 def build_atoms(s, csd, atom_dict):
+
     """ Creates chimeraX atom dictionary (cad)"""
-    from numpy import array, float64    
+    from numpy import array, float64
+
     cad = {}
     for key in atom_dict:
         name = atom_dict[key][0]
@@ -191,7 +196,7 @@ def build_atoms(s, csd, atom_dict):
         xyz = [float(n) for n in atom_dict[key][1:4]]
         new_atom = s.new_atom(name, element)
         new_atom.coord = array(xyz, dtype=float64)
-        new_atom.serial_number = int(key)
+        # new_atom.serial_number = int(key)
 
         # adding ne atom to subst_id 
         csd[atom_dict[key][5]].add_atom(new_atom)
@@ -212,4 +217,3 @@ def build_bonds(s, cad, bond_dict):
             print("Error : bad atom index in bond")
         else:
             s.new_bond(a1, a2)
-
