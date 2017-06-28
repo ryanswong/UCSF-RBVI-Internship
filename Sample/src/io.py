@@ -8,7 +8,6 @@ def open_mol2(session, stream, name):
     bonds = 0
     while True:
         s = _read_block(session, stream)
-        print(s)
         if not s:
             break
         structures.append(s)
@@ -20,10 +19,10 @@ def open_mol2(session, stream, name):
 
 
 
-def print_dict(dict):
-    # print(s)
+def print_dict(comment, dict):
+    print(comment)
     for key, value in dict.items():
-        print(key, ":", value,)
+        print(repr(key), ":", repr(value))
     print()
 
 
@@ -44,43 +43,35 @@ def _read_block(session, stream):
     molecular_dict = read_molecule(session, stream)
     atom_dict = read_atom(session, stream, int(molecular_dict["num_atoms"]))
     bond_dict = read_bond(session, stream, int(molecular_dict["num_bonds"]))
-    substructure_dict = read_substructure(session, stream) #pass in # of substructures
+    substructure_dict = read_substructure(session, stream, int(molecular_dict["num_subst"])) #pass in # of substructures
 
-    print_dict(comment_dict)
-    print_dict(molecular_dict)
-    print_dict(atom_dict)
-    print_dict(bond_dict)
-    print_dict(substructure_dict)
+    print_dict("COMMENT DICTIONARY: ", comment_dict)
+    print_dict("MOLECULE DICTIONARY: ", molecular_dict)
+    print_dict("ATOM DICTIONARY: ", atom_dict)
+    print_dict("BOND DICTIONARY: ", bond_dict)
+    print_dict("SUBSTRUCTURE DICTIONARY: ", substructure_dict)
 
 
     s = AtomicStructure(session)
 
-    print(type(s))
-    print("CHECKPOINT")
     csd = build_residues(s, substructure_dict)
     cad = build_atoms(s, csd, atom_dict)
     build_bonds(s, cad, bond_dict)
 
-
-    # index2atom = {}
-    # for n in range(0, len(molecular_dict["num_atoms"])):
-    #         atom_index = int(parts[0])
-    #         atom = s.newAtom(name, element)
-    #         index2atom[atom_index] = atom
+    from pprint import pprint
 
 
 
 
-    # for _ in range(molecular_dict["num_bonds"]):
-    #     a1 = index2atom[index1]
-    #     a2 = index2atom[index2]
-    #     s.newBond(a1, a2)
 
-    # for _ in range(10):
-    #     test_read = stream.readline().strip()
-    #     print("test read: " , test_read)    
+    for k, v in csd.items():
+        print("printing csd: ", k, ":", v)
+    for k, v in cad.items():
+        print("printing cad: ", k, ":", v)
 
 
+    # pprint("printing CSD: ", (csd))
+    # pprint("printing CAD: ", (cad))
 
     return s
 
@@ -88,19 +79,16 @@ def _read_block(session, stream):
 def read_comments(session, stream):
     """Parses commented section"""
 
-    import ast
     comment_dict = {}
 
 
     while True:
         comment = stream.readline()
-        # print("read comment:", (comment))
-
         if not comment:
             return None
         if not comment_dict and comment[0] == "\n":
             continue
-        if comment[0] != "#" :
+        if comment[0] != "#":
             break
         line = comment.replace("#", "")
         parts = line.split(":")
@@ -111,18 +99,16 @@ def read_comments(session, stream):
                     comment_dict[line[:i].strip()] = line[i:].strip()
                     break
         else:
-            try:
-                comment_dict[str(parts[0])] = ast.literal_eval(parts[1])
+            comment_dict[(parts[0])] = parts[1]
 
-            except (ValueError, SyntaxError):
-                comment_dict[str(parts[0])] = str(parts[1])
 
-        return comment_dict
+
+    return comment_dict
 
 def read_molecule(session, stream):
     """Parses molecule section"""
-
     import ast
+
     while "@<TRIPOS>MOLECULE" not in stream.readline():
         pass
     molecular_dict = {}
@@ -132,7 +118,8 @@ def read_molecule(session, stream):
     for label in mol_labels:
         molecule_line = stream.readline().split()
         try:
-            if all(isinstance(ast.literal_eval(item), int) for item in molecule_line):
+            # Only for the integers (num_atoms, num_bonds, etc)
+            if all(isinstance(int(item), int) for item in molecule_line):
                 molecular_dict.update(dict(zip(label, molecule_line)))
         except (ValueError, SyntaxError):
             molecular_dict[label] = molecule_line[0]
@@ -155,29 +142,18 @@ def read_atom(session, stream, atom_count):
         atom_line = stream.readline().strip()
         if len(atom_line) == 0:
             print("error: no line found")
-        try:
-            if isinstance(ast.literal_eval(atom_line[0]), int):
-                pass
-        except:
-            print("error on line: ", atom_line)
-            return None
         parts = atom_line.split()
+        # parts wil be like, ['1', 'C1', 9.4819, 36.0139, 21.8847, 'C.3', 1, 'RIBOSE_MONOPHOSPHATE', 0.0767]
         if len(parts) != 9:
             print("error: not enough entries on line: ", atom_line)
             return None
-        # if not isinstance(int(parts[0]), int):
-        #     print("error: first value is needs to be an integer")
-        #     return None
+        # val_list = []
+        atom_dict[(parts[0])] = parts[1:]
 
-        val_list = []
-        atom_dict[str(parts[0])] = val_list
-        for value in parts[1:]:
-            try:
-                val_list.append(ast.literal_eval(value))
-            except (ValueError, SyntaxError):
-                val_list.append(str(value))
 
-    # PRINT TEST. DELETE LATER
+    # atom_dict would now be: 
+    # {1 : ['C1', '9.4819', '36.0139', '21.8847', 'C.3', '1', 'RIBOSE_MONOPHOSPHATE', '0.0767'],
+    # 2 : ['C2'....] }
     return atom_dict
 
 def read_bond(session, stream, bond_count):
@@ -197,41 +173,44 @@ def read_bond(session, stream, bond_count):
             print("error: first value is needs to be an integer")
             return None
 
-        bond_dict[str(parts[0])] = parts[1:3]
+        bond_dict[parts[0]] = parts[1:3]
 
     return bond_dict
 
-def read_substructure(session, stream):
+def read_substructure(session, stream, num_subst):
     """parses substructure section"""
 
     while "@<TRIPOS>SUBSTRUCTURE" not in stream.readline():
         pass
 
-    substructure_dict = {}
-    substructure_labels = ["subst_id", "subst_name", "root_atom", "subst_type",
-    "dict_type", "chain", "sub_type", "inter_bonds", "status", "comment"]
+    for _ in range(num_subst):
+        substructure_dict = {}
+        subst_line = stream.readline()
+        parts = subst_line.split()
 
-
-    substructure_line = stream.readline().split()
-
-    for _ in substructure_labels:
-        substructure_dict.update(dict(zip(substructure_labels, substructure_line)))
+        substructure_dict[parts[0]] = parts[1:]
 
     return substructure_dict
 
 def build_residues(s, substructure_dict):
-    #create new chimerax substructure dictionary
+    """ create chimeraX substructure dictionary (csd) """
     csd = {}
     # csd will be something like {1: <residue>}
 
     for s_index in substructure_dict:
-        residue = s.new_residue(substructure_dict["subst_name"][:4], "yay", int(substructure_dict["subst_id"]))
-        csd.update({s_index : residue})
+        # new_residue(self, residue_name, chain_id, pos, insert=' ')
+        residue = s.new_residue(substructure_dict[s_index][0][:4], str(substructure_dict[s_index][5]), int(s_index))
+        print("int(s_index): ", int(s_index), "type: ", type(int(s_index)))
+        print("substructure_dict[s_index][0][:3]: ", substructure_dict[s_index][0][:3], "type: ", type(substructure_dict[s_index][0][:3]))
+        print("str(substructure_dict[s_index][5]): ", str(substructure_dict[s_index][5]), "type: ", type(str(substructure_dict[s_index][5])))
+        print()
+
+        csd[s_index] = residue
     return csd
 
 
 def build_atoms(s, csd, atom_dict):
-    ################### ADD ATOM TO RESIDUE
+    """ Creates chimeraX atom dictionary (cad)"""
     from numpy import array, float64
     cad = {}
     for key in atom_dict:
@@ -245,7 +224,9 @@ def build_atoms(s, csd, atom_dict):
         new_atom.coord = array(xyz, dtype=float64)
         # csd[key].add_atom(new_atom)
 
-        cad.update({key : new_atom})
+        # ADD ATOM TO RESIDUE
+        cad[key] = new_atom
+        cad.update({key : new_atom})  #FIX
 
     return cad
 
@@ -270,8 +251,5 @@ def build_bonds(s, cad, bond_dict):
 #     # print(open(file, "r").read())
 #     with open(file, "r") as stream:
 #         open_mol2(None, stream, file)
-<<<<<<< HEAD
-#
-=======
->>>>>>> 51753f4e692f9cca0bac7d52d738b4620ccfe219
-# test_run("ras.mol2")
+
+# test_run("ras(short).mol2")
