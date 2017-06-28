@@ -1,4 +1,4 @@
-<BundleInfo name="ChimeraX-Sample" version="0.1" package="chimerax.sample"
+<BundleInfo name="ChimeraX-ViewDockX" version="0.1" package="chimerax.viewdockx"
   	    minSessionVersion="1" maxSessionVersion="1">
 
   <!-- Additional information about bundle source -->
@@ -43,8 +43,8 @@ Implements command "sample count" to report number of atoms and bonds.
     <PythonClassifier>Development Status :: 2 - Pre-Alpha</PythonClassifier>
     <PythonClassifier>License :: Free for non-commercial use</PythonClassifier>
 ]
-    <ChimeraXClassifier>ChimeraX :: Tool :: Sample Tool :: General :: Log model atom and bond counts</ChimeraXClassifier>
-    <ChimeraXClassifier>ChimeraX :: Command :: sample count :: General :: Log model atom and bond counts</ChimeraXClassifier>
+    <ChimeraXClassifier>ChimeraX :: Tool :: ViewDock :: General :: display docking results</ChimeraXClassifier>
+    <ChimeraXClassifier>ChimeraX :: Command :: viewdock :: General :: display docking results</ChimeraXClassifier>
     <ChimeraXClassifier>ChimeraX :: DataFormat :: mol2 :: :: Molecule structure :: .mol2 :: :: :: :: :: mol2 format :: utf-8</ChimeraXClassifier>
     <ChimeraXClassifier>ChimeraX :: Open :: mol2 :: mol2 ::</ChimeraXClassifier>
 ]
