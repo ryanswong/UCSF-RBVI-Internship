@@ -49,7 +49,6 @@ class SampleTool(ToolInstance):
                          m.id_string(), m.name))
         html.extend(["</ul>",
                      "<h3>Output : </h3>",
-                     "<h3>HELLOOOOOO</h3>",
                      '<div id="output">Counts appear here</div>'])
         self.html_view.setHtml('\n'.join(html))
 
