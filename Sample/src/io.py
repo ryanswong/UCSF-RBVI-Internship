@@ -18,14 +18,6 @@ def open_mol2(session, stream, name):
     return structures, status
 
 
-
-def print_dict(comment, dict):
-    print(comment)
-    for key, value in dict.items():
-        print(repr(key), ":", repr(value))
-    print()
-
-
 def _read_block(session, stream):
     """function that calls subfunctions that each read a specific section of the mol2 file"""
     # First section should be commented out
@@ -188,7 +180,7 @@ def build_residues(s, substructure_dict):
 
 def build_atoms(s, csd, atom_dict):
     """ Creates chimeraX atom dictionary (cad)"""
-    from numpy import array, float64
+    from numpy import array, float64    
     cad = {}
     for key in atom_dict:
         name = atom_dict[key][0]
@@ -221,16 +213,3 @@ def build_bonds(s, cad, bond_dict):
         else:
             s.new_bond(a1, a2)
 
-
-
-
-
-
-# ## TEST PURPOSE ONLY ####
-# def test_run(file_name):
-#     import os
-#     file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
-#     # print(open(file, "r").read())
-#     with open(file, "r") as stream:
-#         open_mol2(None, stream, file)
-# test_run("ras.mol2")
