@@ -29,10 +29,9 @@ def _read_block(session, stream):
     from numpy import (array, float64)
     from chimerax.core.atomic import AtomicStructure
 
-    comment_dict = read_comments(session, stream)
-    if not comment_dict:
-        return None
-    molecular_dict = read_molecule(session, stream)
+    comment_dict, molecular_dict = read_comments_and_mol(session, stream)
+    # if not comment_dict:
+    #     return None
     atom_dict = read_atom(session, stream, int(molecular_dict["num_atoms"]))
     bond_dict = read_bond(session, stream, int(molecular_dict["num_bonds"]))
     substructure_dict = read_substructure(session, stream, int(molecular_dict["num_subst"])) #pass in # of substructures
@@ -49,7 +48,8 @@ def _read_block(session, stream):
     return s
 
 
-def read_comments(session, stream):
+def read_comments_and_mol(session, stream):
+    import ast
     """Parses commented section"""
 
     comment_dict = {}
@@ -58,7 +58,7 @@ def read_comments(session, stream):
     while True:
         comment = stream.readline()
         if not comment:
-            return None
+            break
         if not comment_dict and comment[0] == "\n":
             continue
         if comment[0] != "#":
@@ -76,11 +76,8 @@ def read_comments(session, stream):
 
 
 
-    return comment_dict
 
-def read_molecule(session, stream):
-    """Parses molecule section"""
-    import ast
+
 
     while "@<TRIPOS>MOLECULE" not in stream.readline():
         pass
@@ -97,8 +94,7 @@ def read_molecule(session, stream):
         except (ValueError, SyntaxError):
             molecular_dict[label] = molecule_line[0]
 
-
-    return molecular_dict
+    return comment_dict, molecular_dict
 
 
 def read_atom(session, stream, atom_count):
