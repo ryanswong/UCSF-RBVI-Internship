@@ -65,28 +65,36 @@ class ViewDockTool(ToolInstance):
                 s.add(key)
 
         # ADDS ALL THE COLUMN HEADERS IN ALPHABETICAL ORDER
-        s = sorted(s)
+        # s = sorted(s)
         html.append('<tr><th bgcolor= "#c266ff">ID</th>')
 
         #COLUMN HEADERS
+        html.append('<th bgcolor="#00FFCC">NAME</th>')
         for category in s:
-            html.append('<th bgcolor="#00FFCC">{}</th>'.format(category.upper()))
+            if category.upper() == "NAME":
+                pass
+            else:
+                html.append('<th bgcolor="#00FFCC">{}</th>'.format(category.upper()))
         html.append("</tr>")
 
         for struct in self.structures:
             comment_dict = struct.viewdock_comment
             html.append("<tr>")
             html.append('<td  bgcolor="#ebccff" align="center"><a href=\"%s:%s\">%s - %s</a></td>' %
-                        (self.CUSTOM_SCHEME, quote(struct.atomspec()),  # "viewodck:#1.1"
+                        (self.CUSTOM_SCHEME, quote(struct.atomspec()),  # "viewdock:#1.1"
                          struct.id_string(), struct.name))
+            name = ""
             for category in s:
                 if category.upper() == "NAME":
+                    name = category
                     html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'.format(comment_dict[category]))
-                    # s.remove(category)
-
+            # s.remove(name)
             for category in s:
                 try:
-                    html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'.format(comment_dict[category]))
+                    if category.upper() == "NAME":
+                        pass
+                    else:
+                        html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'.format(comment_dict[category]))
                 except KeyError:
                     html.append('<td align="center">missing</td>')
             html.append("</tr>")
