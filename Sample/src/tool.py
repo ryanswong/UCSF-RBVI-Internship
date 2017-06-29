@@ -45,57 +45,52 @@ class ViewDockTool(ToolInstance):
         # Called to update page with current list of models
         from chimerax.core.atomic import AtomicStructure
         html = ['<script type="text/javascript" src="/path/to/jquery-latest.js"></script>', 
-        '<script type="text/javascript" src="/path/to/jquery.tablesorter.js"></script>', "<h2>ViewDockX</h2>", "<ul>"]
+        '<script type="text/javascript" src="/path/to/jquery.tablesorter.js"></script>', '<h2><font color= "#FF3399">ViewDockX</font></h2>', "<ul>"]
         from urllib.parse import quote
-        for m in self.structures:
 
-            print("test", m.viewdock_comment["Number"])
-            html.append("<li><a href=\"%s:%s\">%s - %s</a></li>" %
-                        (self.CUSTOM_SCHEME, quote(m.atomspec()), #"viewodck:#1.1"
-                         m.id_string(), m.name))
 
-        # html.extend(["</ul>",
-        #              "<h3>Output : </h3>",
-
-        #              '<div id="output">Counts appear here</div>'])
-        self.html_view.setHtml('\n'.join(html))
         html.append("""<style>
-table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-}
-</style>
+                        table, th, td {
+                            border: 1px solid black;
+                            border-collapse: collapse;
+                        }
+                        </style>
+                        
+                        <table style="width:100%">""")
 
-<table style="width:100%">
-  <tr>
-    <th>Structure</th>
-    <th>Number</th>
-    <th>Source num</th> 
-    <th>Name</th>
-    <th>Description</th>
-    <th>Reflect</th>
-    <th>Energy Score</th>
-    <th>IM Van der waals</th>
-    <th>IM electrostatic</th>
-    <th>RMSD</th>
-  </tr>
-  <tr>""")
+        # TRANSFERS ALL KEYS INTO A SET
+        s = set()
+        for struct in self.structures:
+            for key in struct.viewdock_comment:
+                s.add(key)
 
+        # ADDS ALL THE COLUMN HEADERS IN ALPHABETICAL ORDER
+        s = sorted(s)
+        html.append('<tr><th bgcolor= "#c266ff">ID</th>')
+
+        #COLUMN HEADERS
+        for category in s:
+            html.append('<th bgcolor="#00FFCC">{}</th>'.format(category.upper()))
+        html.append("</tr>")
 
         for struct in self.structures:
-            comment = struct.viewdock_comment
-            html.append("""  <tr>
-    <td>{}</td>
-    <td>{}</td>
-    <td>{}</td>
-    <td>{}</td>
-    <td>{}</td>
-    <td>{}</td>
-    <td>{}</td>
-    <td>{}</td>
-    <td>{}</td>
-  </tr>""".format(comment["Number"], comment["Source num"], comment["Name"], comment["Description"], comment["Name"],\
-    comment["Energy score"], comment["intermolecular van der Waals"] , comment["intermolecular electrostatic"], comment["RMSD from input orientation (A)"]))
+            comment_dict = struct.viewdock_comment
+            html.append("<tr>")
+            html.append('<td  bgcolor="#ebccff" align="center"><a href=\"%s:%s\">%s - %s</a></td>' %
+                        (self.CUSTOM_SCHEME, quote(struct.atomspec()),  # "viewodck:#1.1"
+                         struct.id_string(), struct.name))
+            for category in s:
+                if category.upper() == "NAME":
+                    html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'.format(comment_dict[category]))
+                    # s.remove(category)
+
+            for category in s:
+                try:
+                    html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'.format(comment_dict[category]))
+                except KeyError:
+                    html.append('<td align="center">missing</td>')
+            html.append("</tr>")
+
 
         html.append("""</table>""")
 

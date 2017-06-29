@@ -30,9 +30,8 @@ def _read_block(session, stream):
     from chimerax.core.atomic import AtomicStructure
 
     comment_dict, molecular_dict = read_com_and_mol(session, stream)
-    # if not comment_dict:
-    #     return None
-    # molecular_dict = read_molecule(session, stream)
+    if not molecular_dict:
+        return None
     atom_dict = read_atom(session, stream, int(molecular_dict["num_atoms"]))
     bond_dict = read_bond(session, stream, int(molecular_dict["num_bonds"]))
     substructure_dict = read_substructure(session, stream, int(molecular_dict["num_subst"])) #pass in # of substructures
