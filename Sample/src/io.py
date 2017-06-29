@@ -13,7 +13,7 @@ def open_mol2(session, stream, name):
         structures.append(s)
         atoms += s.num_atoms
         bonds += s.num_bonds
-    status = ("Opened mol2 file containing {} structures ({} atoms, {} bonds)".format
+    status = ("Opened mol2 file containing {} structures {} atoms, {} bonds".format
               (len(structures), atoms, bonds))
     return structures, status
 
@@ -29,10 +29,10 @@ def _read_block(session, stream):
     from numpy import (array, float64)
     from chimerax.core.atomic import AtomicStructure
 
-    comment_dict = read_comments(session, stream)
-    if not comment_dict:
-        return None
-    molecular_dict = read_molecule(session, stream)
+    comment_dict, molecular_dict = read_com_and_mol(session, stream)
+    # if not comment_dict:
+    #     return None
+    # molecular_dict = read_molecule(session, stream)
     atom_dict = read_atom(session, stream, int(molecular_dict["num_atoms"]))
     bond_dict = read_bond(session, stream, int(molecular_dict["num_bonds"]))
     substructure_dict = read_substructure(session, stream, int(molecular_dict["num_subst"])) #pass in # of substructures
@@ -43,25 +43,25 @@ def _read_block(session, stream):
     csd = build_residues(s, substructure_dict)
     cad = build_atoms(s, csd, atom_dict)
     build_bonds(s, cad, bond_dict)
-
     s.viewdock_comment = comment_dict
 
     return s
 
 
-def read_comments(session, stream):
+def read_com_and_mol(session, stream):
     """Parses commented section"""
+    import ast
 
     comment_dict = {}
 
 
     while True:
         comment = stream.readline()
-        if not comment:
-            return None
-        if not comment_dict and comment[0] == "\n":
+        if not comment: 
+            break
+        if not comment_dict and comment[0] == "\n": #before the comment section
             continue
-        if comment[0] != "#":
+        if comment[0] != "#":  #for the end of comment section
             break
         line = comment.replace("#", "")
         parts = line.split(":")
@@ -74,19 +74,20 @@ def read_comments(session, stream):
         else:
             comment_dict[(parts[0])] = parts[1]
 
-
-
-    return comment_dict
-
-def read_molecule(session, stream):
-    """Parses molecule section"""
-    import ast
-
-    while "@<TRIPOS>MOLECULE" not in stream.readline():
+    if comment == "@<TRIPOS>MOLECULE":
         pass
+    else:
+        molecule_line = stream.readline()
+
+        while "@<TRIPOS>MOLECULE" not in molecule_line:
+            if not molecule_line: #if not even "\n"
+                return None, None
+            molecule_line = stream.readline()
+
     molecular_dict = {}
     mol_labels = ["mol_name", ["num_atoms", "num_bonds", "num_subst", "num_feat", "num_sets"],\
     "mol_type", "charge_type", "status_bits"]
+
 
     for label in mol_labels:
         molecule_line = stream.readline().split()
@@ -97,8 +98,7 @@ def read_molecule(session, stream):
         except (ValueError, SyntaxError):
             molecular_dict[label] = molecule_line[0]
 
-
-    return molecular_dict
+    return comment_dict, molecular_dict
 
 
 def read_atom(session, stream, atom_count):

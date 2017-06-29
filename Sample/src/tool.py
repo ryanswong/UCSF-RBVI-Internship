@@ -48,15 +48,58 @@ class ViewDockTool(ToolInstance):
         '<script type="text/javascript" src="/path/to/jquery.tablesorter.js"></script>', "<h2>ViewDockX</h2>", "<ul>"]
         from urllib.parse import quote
         for m in self.structures:
+
+            print("test", m.viewdock_comment["Number"])
             html.append("<li><a href=\"%s:%s\">%s - %s</a></li>" %
                         (self.CUSTOM_SCHEME, quote(m.atomspec()), #"viewodck:#1.1"
                          m.id_string(), m.name))
-        html.append("</ul>")
 
         # html.extend(["</ul>",
         #              "<h3>Output : </h3>",
 
         #              '<div id="output">Counts appear here</div>'])
+        self.html_view.setHtml('\n'.join(html))
+        html.append("""<style>
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+</style>
+
+<table style="width:100%">
+  <tr>
+    <th>Structure</th>
+    <th>Number</th>
+    <th>Source num</th> 
+    <th>Name</th>
+    <th>Description</th>
+    <th>Reflect</th>
+    <th>Energy Score</th>
+    <th>IM Van der waals</th>
+    <th>IM electrostatic</th>
+    <th>RMSD</th>
+  </tr>
+  <tr>""")
+
+
+        for struct in self.structures:
+            comment = struct.viewdock_comment
+            html.append("""  <tr>
+    <td>{}</td>
+    <td>{}</td>
+    <td>{}</td>
+    <td>{}</td>
+    <td>{}</td>
+    <td>{}</td>
+    <td>{}</td>
+    <td>{}</td>
+    <td>{}</td>
+  </tr>""".format(comment["Number"], comment["Source num"], comment["Name"], comment["Description"], comment["Name"],\
+    comment["Energy score"], comment["intermolecular van der Waals"] , comment["intermolecular electrostatic"], comment["RMSD from input orientation (A)"]))
+
+        html.append("""</table>""")
+
+
         self.html_view.setHtml('\n'.join(html))
 
     def _navigate(self, info):
