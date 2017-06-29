@@ -85,7 +85,11 @@ class ViewDockTool(ToolInstance):
                          struct.id_string(), struct.name))
             for category in s:
                 if category.upper() == "NAME":
-                    html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'.format(comment_dict[category]))
+                    try:
+                        html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'.format(comment_dict[category]))
+                    except KeyError:
+                        html.append('<td align="center">missing</td>')
+
             for category in s:
                 try:
                     if category.upper() == "NAME":
