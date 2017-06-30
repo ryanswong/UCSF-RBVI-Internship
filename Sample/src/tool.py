@@ -44,8 +44,9 @@ class ViewDockTool(ToolInstance):
     def _update_models(self, trigger=None, trigger_data=None):
         # Called to update page with current list of models
         from chimerax.core.atomic import AtomicStructure
-        html = ['<script type="text/javascript" src="/path/to/jquery-latest.js"></script>', 
-        '<script type="text/javascript" src="/path/to/jquery.tablesorter.js"></script>', '<h2><font color= "#FF3399">ViewDockX</font></h2>', "<ul>"]
+        html = ['<script type="text/javascript" src="/path/to/jquery-latest.js"></script>',
+                '<script type="text/javascript" src="/path/to/jquery.tablesorter.js"></script>',
+                '<h2><font color= "#FF3399">ViewDockX</font></h2>', "<ul>"]
         from urllib.parse import quote
 
 
@@ -59,42 +60,54 @@ class ViewDockTool(ToolInstance):
                         <table style="width:100%">""")
 
         # TRANSFERS ALL KEYS INTO A SET
-        s = set()
+        category_set = set()
         for struct in self.structures:
-            for key in struct.viewdock_comment:
-                s.add(key)
+            try:
+                category_set = {key for key in struct.viewdock_comment}
+            except AttributeError:
+                pass
 
         # ADDS ALL THE COLUMN HEADERS IN ALPHABETICAL ORDER
-        # s = sorted(s)
+        # category_set = sorted(category_set)
         html.append('<tr><th bgcolor= "#c266ff">ID</th>')
 
         #COLUMN HEADERS
         html.append('<th bgcolor="#00FFCC">NAME</th>')
-        for category in s:
+        for category in category_set:
             if category.upper() == "NAME":
                 pass
             else:
                 html.append('<th bgcolor="#00FFCC">{}</th>'.format(category.upper()))
         html.append("</tr>")
 
+
+
+
+
+        #COLUMN DATA
         for struct in self.structures:
-            comment_dict = struct.viewdock_comment
+            try:
+                comment_dict = struct.viewdock_comment
+            except AttributeError:
+                comment_dict = {}
             html.append("<tr>")
             html.append('<td  bgcolor="#ebccff" align="center"><a href=\"%s:%s\">%s - %s</a></td>' %
                         (self.CUSTOM_SCHEME, quote(struct.atomspec()),  # "viewdock:#1.1"
                          struct.id_string(), struct.name))
-            for category in s:
+            for category in category_set:
                 if category.upper() == "NAME":
                     try:
-                        html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'.format(comment_dict[category]))
+                        html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'\
+                            .format(comment_dict[category]))
                     except KeyError:
                         html.append('<td align="center">missing</td>')
-            for category in s:
+            for category in category_set:
                 try:
                     if category.upper() == "NAME":
                         pass
                     else:
-                        html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'.format(comment_dict[category]))
+                        html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'\
+                            .format(comment_dict[category]))
                 except KeyError:
                     html.append('<td align="center">missing</td>')
             html.append("</tr>")
