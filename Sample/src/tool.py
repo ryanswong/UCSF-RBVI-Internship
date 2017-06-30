@@ -44,15 +44,20 @@ class ViewDockTool(ToolInstance):
     def _update_models(self, trigger=None, trigger_data=None):
         # Called to update page with current list of models
         from chimerax.core.atomic import AtomicStructure
+<<<<<<< HEAD
         html = ['<script type="text/javascript" src="/path/to/jquery-latest.js"></script>',
                 '<script type="text/javascript" src="/path/to/jquery.tablesorter.js"></script>',
                 '<h2><font color= "#FF3399">ViewDockX</font></h2>', "<ul>"]
+=======
+        html = ['<script type="text/javascript" src="/path/to/jquery-latest.js"></script>', 
+        '<script type="text/javascript" src="/path/to/jquery.tablesorter.js"></script>', '<h2 style="font-family:arial;"><font color= "#FF3399">ViewDockX</font></h2>', "<ul>"]
+>>>>>>> 3f89dd6ec2c1437ab473917cf26fbb81b96854bf
         from urllib.parse import quote
 
 
         html.append("""<style>
                         table, th, td {
-                            border: 1px solid black;
+                            border: 1px solid grey;
                             border-collapse: collapse;
                         }
                         </style>
@@ -68,16 +73,25 @@ class ViewDockTool(ToolInstance):
                 pass
 
         # ADDS ALL THE COLUMN HEADERS IN ALPHABETICAL ORDER
+<<<<<<< HEAD
         # category_set = sorted(category_set)
         html.append('<tr><th bgcolor= "#c266ff">ID</th>')
 
         #COLUMN HEADERS
         html.append('<th bgcolor="#00FFCC">NAME</th>')
         for category in category_set:
+=======
+        # s = sorted(s)
+        html.append('<tr><th style="font-family:arial;" bgcolor= "#c266ff">ID</th>')
+
+        #COLUMN HEADERS
+        html.append('<th style="font-family:arial;" bgcolor="#00FFCC">NAME</th>')
+        for category in s:
+>>>>>>> 3f89dd6ec2c1437ab473917cf26fbb81b96854bf
             if category.upper() == "NAME":
                 pass
             else:
-                html.append('<th bgcolor="#00FFCC">{}</th>'.format(category.upper()))
+                html.append('<th style="font-family:arial;" bgcolor="#00FFCC">{}</th>'.format(category.upper()))
         html.append("</tr>")
 
 
@@ -91,25 +105,37 @@ class ViewDockTool(ToolInstance):
             except AttributeError:
                 comment_dict = {}
             html.append("<tr>")
-            html.append('<td  bgcolor="#ebccff" align="center"><a href=\"%s:%s\">%s - %s</a></td>' %
+            html.append('<td  style="font-family:arial;" bgcolor="#ebccff" align="center"><a href=\"%s:%s\">%s - %s</a></td>' %
                         (self.CUSTOM_SCHEME, quote(struct.atomspec()),  # "viewdock:#1.1"
                          struct.id_string(), struct.name))
             for category in category_set:
                 if category.upper() == "NAME":
                     try:
+<<<<<<< HEAD
                         html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'\
                             .format(comment_dict[category]))
                     except KeyError:
                         html.append('<td align="center">missing</td>')
             for category in category_set:
+=======
+                        html.append('<td style="font-family:arial;" bgcolor = "#CCFFF5" align="center">{}</td>'.format(comment_dict[category]))
+                    except KeyError:
+                        html.append('<td style="font-family:arial;" align="center">missing</td>')
+
+            for category in s:
+>>>>>>> 3f89dd6ec2c1437ab473917cf26fbb81b96854bf
                 try:
                     if category.upper() == "NAME":
                         pass
                     else:
+<<<<<<< HEAD
                         html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'\
                             .format(comment_dict[category]))
+=======
+                        html.append('<td style="font-family:arial;" bgcolor = "#CCFFF5" align="center">{}</td>'.format(comment_dict[category]))
+>>>>>>> 3f89dd6ec2c1437ab473917cf26fbb81b96854bf
                 except KeyError:
-                    html.append('<td align="center">missing</td>')
+                    html.append('<td style="font-family:arial;" align="center">missing</td>')
             html.append("</tr>")
 
 
