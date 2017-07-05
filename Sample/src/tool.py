@@ -45,7 +45,7 @@ class ViewDockTool(ToolInstance):
         # Called to update page with current list of models
         from chimerax.core.atomic import AtomicStructure
         html = ['<script type="text/javascript" src="/path/to/jquery-latest.js"></script>', 
-        '<script type="text/javascript" src="/path/to/jquery.tablesorter.js"></script>', '<h2 style="font-family:arial;"><font color= "#FF3399">ViewDockX</font></h2>', "<ul>"]
+        '<script type="text/javascript" src="/path/to/jquery.tablesorter.js"></script>', '<h2 style="font-family:arial;"><font size="20" color= "#FF3399">Noah Ku</font></h2>', "<ul>"]
         from urllib.parse import quote
 
 
@@ -102,6 +102,10 @@ class ViewDockTool(ToolInstance):
 
 
         html.append("""</table>""")
+
+        html.append("<script>",
+                    "src = javascript",
+                    "</script>")
 
 
         self.html_view.setHtml('\n'.join(html))
