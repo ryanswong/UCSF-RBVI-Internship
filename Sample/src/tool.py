@@ -50,7 +50,7 @@ class ViewDockTool(ToolInstance):
         from urllib.parse import quote
         html = ['<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>',
                 '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.15/js/jquery.tablesorter.js"></script>',
-                '<h2><font color= "#FF3399">ViewDockX</font></h2>',
+                '<h2><font color= "#FF8080">ViewDockX</font></h2>',
                 "<ul>"]
 
         html.append("""<style>
@@ -126,7 +126,6 @@ class ViewDockTool(ToolInstance):
                     } 
                 );
                 </script>""")
-        print('\n'.join(html))
         self.html_view.setHtml('\n'.join(html))
 
     def _navigate(self, info):
