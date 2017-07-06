@@ -1,5 +1,5 @@
 # vim: set expandtab shiftwidth=4 softtabstop=4:
-
+from chimerax.core.atomic import AtomicStructure
 from chimerax.core.tools import ToolInstance
 
 
@@ -10,7 +10,7 @@ class ViewDockTool(ToolInstance):
     CUSTOM_SCHEME = "viewdockx"    # HTML scheme for custom links
     display_name = "ViewDockX"
 
-    def __init__(self, session, tool_name, structures = None):
+    def __init__(self, session, tool_name, structures=None):
         # Standard template stuff for intializing tool
         super().__init__(session, tool_name)
         from chimerax.core.ui.gui import MainToolWindow
@@ -45,6 +45,7 @@ class ViewDockTool(ToolInstance):
         import urllib.parse
         from chimerax.core.commands.cli import StructuresArg
         # Called to update page with current list of models
+
         from chimerax.core.atomic import AtomicStructure
         from urllib.parse import quote
         html = ['<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>',
@@ -70,6 +71,7 @@ class ViewDockTool(ToolInstance):
         category_list = list(category_set)
 
         # ADDS ALL THE COLUMN HEADERS IN ALPHABETICAL ORDER
+
         # category_list = sorted(category_list)
         html.append('<thead><tr><th bgcolor= "#c266ff">ID</th>')
 
@@ -86,6 +88,7 @@ class ViewDockTool(ToolInstance):
                     .format(category.upper()))
         html.append("</tr></thead><tbody>")
         #COLUMN DATA
+
         for struct in self.structures:
             try:
                 comment_dict = struct.viewdock_comment
