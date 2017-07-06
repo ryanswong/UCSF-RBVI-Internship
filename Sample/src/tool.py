@@ -1,5 +1,5 @@
 # vim: set expandtab shiftwidth=4 softtabstop=4:
-
+from chimerax.core.atomic import AtomicStructure
 from chimerax.core.tools import ToolInstance
 
 
@@ -10,7 +10,7 @@ class ViewDockTool(ToolInstance):
     CUSTOM_SCHEME = "viewdockx"    # HTML scheme for custom links
     display_name = "ViewDockX"
 
-    def __init__(self, session, tool_name, structures = None):
+    def __init__(self, session, tool_name, structures=None):
         # Standard template stuff for intializing tool
         super().__init__(session, tool_name)
         from chimerax.core.ui.gui import MainToolWindow
@@ -43,10 +43,11 @@ class ViewDockTool(ToolInstance):
 
     def _update_models(self, trigger=None, trigger_data=None):
         # Called to update page with current list of models
+
         from chimerax.core.atomic import AtomicStructure
 
-        html = ['<script type="text/javascript" src="/path/to/jquery-latest.js"></script>',
-                '<script type="text/javascript" src="/path/to/jquery.tablesorter.js"></script>',
+        html = ['<script src="https://ajax.googleapis.com/ajax/libs/jquery.tablesorter.js"></script>',
+                '<script src="https://ajax.googleapis.com/ajax/libs/jquery-latest.js"></script>',
                 '<h2><font color= "#FF3399">ViewDockX</font></h2>', "<ul>"]
 
 
@@ -81,21 +82,21 @@ class ViewDockTool(ToolInstance):
             if category.upper() == "NAME":
                 pass
             else:
-                html.append('<th style="font-family:arial;" bgcolor="#00FFCC">{}</th>'.format(category.upper()))
+                html.append('<th bgcolor="#00FFCC">{}</th>'.format(category.upper()))
         html.append("</tr>")
 
 
 
 
 
-        #COLUMN DATA
+        # COLUMN DATA
         for struct in self.structures:
             try:
                 comment_dict = struct.viewdock_comment
             except AttributeError:
                 comment_dict = {}
             html.append("<tr>")
-            html.append('<td  style="font-family:arial;" bgcolor="#ebccff" align="center"><a href=\"%s:%s\">%s - %s</a></td>' %
+            html.append('<td  bgcolor="#ebccff" align="center"><a href=\"%s:%s\">%s - %s</a></td>' %
                         (self.CUSTOM_SCHEME, quote(struct.atomspec()),  # "viewdock:#1.1"
                          struct.id_string(), struct.name))
             for category in category_set:
@@ -121,6 +122,14 @@ class ViewDockTool(ToolInstance):
 
 
         html.append("""</table>""")
+
+        # html.append("""<script>
+        #         $(document).ready(function() {
+        #             $("#myTable").tablesorter();
+        #         }
+        #         );
+        #         </script>
+        # """)
 
         self.html_view.setHtml('\n'.join(html))
 
