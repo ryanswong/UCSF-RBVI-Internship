@@ -35,19 +35,26 @@ class ViewDockTool(ToolInstance):
         # Register for model addition/removal so we can update model list
         from chimerax.core.models import ADD_MODELS, REMOVE_MODELS
         t = session.triggers
-        self._add_handler = t.add_handler(ADD_MODELS, self._update_models)
+        # self._add_handler = t.add_handler(ADD_MODELS, self._update_models)
         self._remove_handler = t.add_handler(REMOVE_MODELS, self._update_models)
 
         # Go!
         self._update_models()
 
     def _update_models(self, trigger=None, trigger_data=None):
+        # Called to update page with current list of models
         import urllib.parse
         from chimerax.core.commands.cli import StructuresArg
-        # Called to update page with current list of models
-
+        from urllib.parse import urlunparse, urlparse, quote, parse_qs, parse_qsl, urlencode
         from chimerax.core.atomic import AtomicStructure
-        from urllib.parse import quote
+        from urllib.parse import quote 
+
+        if trigger_data is not None:
+
+            for struct in self.structures:
+                if struct in trigger_data:
+                    self.structures.remove(struct)
+
         html = ['<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>',
                 '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.15/js/jquery.tablesorter.js"></script>',
                 '<h2><font color= "#FF3399">ViewDockX</font></h2>',
@@ -95,10 +102,15 @@ class ViewDockTool(ToolInstance):
             except AttributeError:  #for files with empty comment sections
                 comment_dict = {}
             html.append("<tr>")
+            args = [("atomspec", struct.atomspec())]
+            query = urlencode(args)
+            url = urlunparse((self.CUSTOM_SCHEME, "", "", "", query, ""))
+
+
             html.extend(['<td style="font-family:arial;" bgcolor="#ebccff" align="center">',
-                         '<input type="checkbox" />',
-                         '<a href=\"{}:{}\">{} - {}</a></td>'.format(self.CUSTOM_SCHEME,\
-                        quote(struct.atomspec()), struct.id_string(), struct.name)])
+                         """<input type="checkbox" class="checkbox" href="{}&checkbox=true"/>""".format(url),
+                         '<a href="{}">model{}</a></td>'.format(url, struct.atomspec())])
+
 
             # ADDING VALUE FOR NAME
             for category in category_list:
@@ -126,26 +138,64 @@ class ViewDockTool(ToolInstance):
                     } 
                 );
                 </script>""")
-        print('\n'.join(html))
+
+
+
+        html.append("""<script>
+                $(".checkbox").click(function(){
+
+                if($(this).is(":checked")){
+                    window.location=$(this).attr('href')
+                }
+                else{
+                    // SOMETHING such as sset display to false
+                }
+
+                });
+                </script>""")
+
+
         self.html_view.setHtml('\n'.join(html))
+
+        print('\n'.join(html))
+
+
+
+
+
 
     def _navigate(self, info):
         # Called when link is clicked.
         # "info" is an instance of QWebEngineUrlRequestInfo
+        from chimerax.core.commands.cli import StructuresArg
+        from urllib.parse import parse_qs
         url = info.requestUrl()
         scheme = url.scheme()
         if scheme == self.CUSTOM_SCHEME:
             # Intercept our custom scheme.
             # Method may be invoked in a different thread than
             # the main thread where Qt calls may be made.
-            self.session.ui.thread_safe(self._run, url.path())
+            query = parse_qs(url.query())
+            # try:
+            atomspec = query["atomspec"][0]
+            # except (KeyError, ValueError):
+            #     atomspec = "missing"
+            # print("atomspec:", atomspec)
+            # print("checkpoint 3")
+            # structures, text, remainder = StructuresArg.parse(atomspec, self.session)
+            structures, text, remainder = StructuresArg.parse(atomspec, self.session)
+            self.session.ui.thread_safe(self._run, structures)
 
-    def _run(self, atomspec):
-        # Execute "sample count" command for given atomspec
-        from chimerax.core.commands import run
+    def _run(self, structures):
+        # ###Execute "sample count" command for given atomspec
+        # from chimerax.core.commands import run
+        for struct in self.structures:
+            struct.display = struct in structures
 
-        run(self.session, "select " + atomspec)
-        print("selected: ", atomspec)
+
+
+
+        # run(self.session, "select " + text)
         # from chimerax.core.logger import StringPlainTextLog
         # with StringPlainTextLog(self.session.logger) as log:
         #     try:
