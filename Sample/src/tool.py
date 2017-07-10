@@ -57,7 +57,7 @@ class ViewDockTool(ToolInstance):
 
         html = ['<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>',
                 '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.15/js/jquery.tablesorter.js"></script>',
-                '<h2><font color= "#FF3399">ViewDockX</font></h2>',
+                '<h2><font color= "#FF8080">ViewDockX</font></h2>',
                 "<ul>"]
 
         html.append("""<style>
@@ -138,6 +138,7 @@ class ViewDockTool(ToolInstance):
                     } 
                 );
                 </script>""")
+<<<<<<< HEAD
 
 
 
@@ -155,6 +156,8 @@ class ViewDockTool(ToolInstance):
                 </script>""")
 
 
+=======
+>>>>>>> 793e90e5c2fa0df26898b418100b81e9291e9481
         self.html_view.setHtml('\n'.join(html))
 
         print('\n'.join(html))
