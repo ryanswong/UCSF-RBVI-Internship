@@ -80,7 +80,9 @@ class ViewDockTool(ToolInstance):
         # ADDS ALL THE COLUMN HEADERS IN ALPHABETICAL ORDER
 
         # category_list = sorted(category_list)
-        html.append('<thead><tr><th bgcolor= "#c266ff">ID</th>')
+        html.append('<h2><font color = "#FF8080">Check All</font></h2>')
+        html.append('<thead><tr><th bgcolor= "#c266ff">    </th>')
+        html.append('<th bgcolor= "#c266ff">ID</th>')
 
 
 
@@ -107,8 +109,10 @@ class ViewDockTool(ToolInstance):
             url = urlunparse((self.CUSTOM_SCHEME, "", "", "", query, ""))
 
 
-            html.extend(['<td style="font-family:arial;" bgcolor="#ebccff" align="center">',
-                         """<input type="checkbox" class="checkbox" href="{}&checkbox=true"/>""".format(url),
+            html.extend(['<td bgcolor="#ebccff" align="center">',
+                         '<input type="checkbox" class="checkbox" href="{}"/></td>'.format(url),
+
+                         '<td style="font-family:arial;" bgcolor="#ebccff" align="center">',
                          '<a href="{}">model{}</a></td>'.format(url, struct.atomspec())])
 
 
@@ -138,29 +142,23 @@ class ViewDockTool(ToolInstance):
                     } 
                 );
                 </script>""")
-<<<<<<< HEAD
-
-
 
         html.append("""<script>
                 $(".checkbox").click(function(){
 
                 if($(this).is(":checked")){
-                    window.location=$(this).attr('href')
+                    window.location=$(this).attr('href')+"&display=1"
                 }
                 else{
-                    // SOMETHING such as sset display to false
+                    window.location=$(this).attr('href')+"&display=0"
                 }
 
                 });
                 </script>""")
 
-
-=======
->>>>>>> 793e90e5c2fa0df26898b418100b81e9291e9481
         self.html_view.setHtml('\n'.join(html))
 
-        print('\n'.join(html))
+        # print('\n'.join(html))
 
 
 
@@ -179,21 +177,45 @@ class ViewDockTool(ToolInstance):
             # Method may be invoked in a different thread than
             # the main thread where Qt calls may be made.
             query = parse_qs(url.query())
+
+            print(query)
             # try:
             atomspec = query["atomspec"][0]
+            disp = query["display"][0]
             # except (KeyError, ValueError):
             #     atomspec = "missing"
             # print("atomspec:", atomspec)
             # print("checkpoint 3")
             # structures, text, remainder = StructuresArg.parse(atomspec, self.session)
             structures, text, remainder = StructuresArg.parse(atomspec, self.session)
-            self.session.ui.thread_safe(self._run, structures)
+            self.session.ui.thread_safe(self._run, structures, disp)
 
-    def _run(self, structures):
+    def _run(self, structures, disp):
         # ###Execute "sample count" command for given atomspec
         # from chimerax.core.commands import run
-        for struct in self.structures:
-            struct.display = struct in structures
+
+        # for struct in self.structures:
+        #     struct.display = struct in structures
+
+
+        print("type:", type(self.structures))
+        # print(structures)
+
+        print(disp)
+
+        if disp == "0":
+            print("true")
+            for s in self.structures:
+                if structures[0] == s:
+                    s.display = False
+        else:
+            print("else")
+            for s in self.structures:
+                if structures[0] == s:
+                    s.display = True
+
+
+
 
 
 
