@@ -80,8 +80,9 @@ class ViewDockTool(ToolInstance):
         # ADDS ALL THE COLUMN HEADERS IN ALPHABETICAL ORDER
 
         # category_list = sorted(category_list)
-        html.append('<input type="checkbox" class="checkbox" href="{}"/>check all</td>')
-        html.append('<thead><tr><th bgcolor= "#c266ff">    </th>')
+        html.append('<input type="checkbox" id = "check_all" href="{}"/>check all</td>')
+        html.append('<input type="checkbox" id = "show_links" href="{}"/>show links</td>')
+        html.append('<thead><tr><th bgcolor= "#c266ff">S</th>')
         html.append('<th bgcolor= "#c266ff">ID</th>')
 
 
@@ -118,7 +119,7 @@ class ViewDockTool(ToolInstance):
             html.extend(['<td bgcolor="#ebccff" align="center">',
                          '<input type="checkbox" class="checkbox" href="{}"/></td>'.format(url),
 
-                         '<td style="font-family:arial;" bgcolor="#ebccff" align="center">model {}</td>'.format(struct.atomspec())
+                         '<td style="font-family:arial;" bgcolor="#ebccff" align="center">{}</td>'.format(struct.atomspec()[1:])
                          ])
 
 
@@ -161,7 +162,20 @@ class ViewDockTool(ToolInstance):
 
                 });
                 </script>""")
+        html.append("""<script>
+                $("#check_all").click(function(){
 
+                if($(this).is(":checked")){
+                    $(".checkbox").prop('checked', true);
+                    window.location="viewdockx:?show_all=true"
+                }
+                else{
+                    $(".checkbox").prop('checked', false);
+                    window.location="viewdockx:?show_all=false"
+                }
+
+                });
+                </script>""")
         self.html_view.setHtml('\n'.join(html))
 
         # print('\n'.join(html))
@@ -182,19 +196,25 @@ class ViewDockTool(ToolInstance):
             # Intercept our custom scheme.
             # Method may be invoked in a different thread than
             # the main thread where Qt calls may be made.
+
             query = parse_qs(url.query())
 
-            print(query)
-            # try:
-            atomspec = query["atomspec"][0]
-            disp = query["display"][0]
-            # except (KeyError, ValueError):
-            #     atomspec = "missing"
-            # print("atomspec:", atomspec)
-            # print("checkpoint 3")
-            # structures, text, remainder = StructuresArg.parse(atomspec, self.session)
-            structures, text, remainder = StructuresArg.parse(atomspec, self.session)
-            self.session.ui.thread_safe(self._run, structures, disp)
+            print("query:", query)
+
+            if "show_all" in query.keys():
+                show_all = query["show_all"][0]
+                self.session.ui.thread_safe(self._checkall, show_all)
+            else:
+                # try:
+                atomspec = query["atomspec"][0]
+                disp = query["display"][0]
+                # except (KeyError, ValueError):
+                #     atomspec = "missing"
+                # print("atomspec:", atomspec)
+                # print("checkpoint 3")
+                # structures, text, remainder = StructuresArg.parse(atomspec, self.session)
+                structures, text, remainder = StructuresArg.parse(atomspec, self.session)
+                self.session.ui.thread_safe(self._run, structures, disp)
 
     def _run(self, structures, disp):
         # ###Execute "sample count" command for given atomspec
@@ -205,16 +225,23 @@ class ViewDockTool(ToolInstance):
 
 
         if disp == "0":
-            print("true")
             for s in self.structures:
                 if structures[0] == s:
                     s.display = False
         else:
-            print("else")
             for s in self.structures:
                 if structures[0] == s:
                     s.display = True
 
+    def _checkall(self, show_all):
+
+        if show_all == "true":
+            for s in self.structures:
+                s.display = True
+
+        else:
+            for s in self.structures:
+                s.display = False
 
 
 
@@ -230,3 +257,4 @@ class ViewDockTool(ToolInstance):
         #         js = ('document.getElementById("output").innerHTML = %s'
         #               % repr(html))
         #         self.html_view.page().runJavaScript(js)
+    
