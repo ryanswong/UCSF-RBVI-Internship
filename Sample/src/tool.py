@@ -80,7 +80,7 @@ class ViewDockTool(ToolInstance):
         # ADDS ALL THE COLUMN HEADERS IN ALPHABETICAL ORDER
 
         # category_list = sorted(category_list)
-        html.append('<h2><font color = "#FF8080">Check All</font></h2>')
+        html.append('<input type="checkbox" class="checkbox" href="{}"/>check all</td>')
         html.append('<thead><tr><th bgcolor= "#c266ff">    </th>')
         html.append('<th bgcolor= "#c266ff">ID</th>')
 
@@ -109,11 +109,17 @@ class ViewDockTool(ToolInstance):
             url = urlunparse((self.CUSTOM_SCHEME, "", "", "", query, ""))
 
 
+            # html.extend(['<td bgcolor="#ebccff" align="center">',
+            #              '<input type="checkbox" class="checkbox" href="{}"/></td>'.format(url),
+            #
+            #              '<td style="font-family:arial;" bgcolor="#ebccff" align="center">',
+            #              '<a href="{}">model{}</a></td>'.format(url, struct.atomspec())])
+
             html.extend(['<td bgcolor="#ebccff" align="center">',
                          '<input type="checkbox" class="checkbox" href="{}"/></td>'.format(url),
 
-                         '<td style="font-family:arial;" bgcolor="#ebccff" align="center">',
-                         '<a href="{}">model{}</a></td>'.format(url, struct.atomspec())])
+                         '<td style="font-family:arial;" bgcolor="#ebccff" align="center">model {}</td>'.format(struct.atomspec())
+                         ])
 
 
             # ADDING VALUE FOR NAME
@@ -197,11 +203,6 @@ class ViewDockTool(ToolInstance):
         # for struct in self.structures:
         #     struct.display = struct in structures
 
-
-        print("type:", type(self.structures))
-        # print(structures)
-
-        print(disp)
 
         if disp == "0":
             print("true")
