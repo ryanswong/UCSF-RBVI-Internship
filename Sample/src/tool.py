@@ -41,7 +41,7 @@ class ViewDockTool(ToolInstance):
         # Go!
         self._update_models()
 
-    def _update_models(self, trigger=None, trigger_data=None):
+    def _update_models(self, trigger=None, trigger_data=None, checkbox=None):
         # Called to update page with current list of models
         import urllib.parse
         from chimerax.core.commands.cli import StructuresArg
@@ -65,10 +65,11 @@ class ViewDockTool(ToolInstance):
                             border: 1px solid grey;
                             border-collapse: collapse;
                         }
-                        </style>
-                        
-                        <table id="viewdockx_table" class="tablesorter" style="width:100%">""")
-                # TRANSFERS ALL KEYS INTO A SET
+                        </style>""")
+
+
+
+        # TRANSFERS ALL KEYS INTO A SET THEN A LIST
         category_set = set()
         for struct in self.structures:
             try:
@@ -77,50 +78,77 @@ class ViewDockTool(ToolInstance):
                 pass
         category_list = list(category_set)
 
-        # ADDS ALL THE COLUMN HEADERS IN ALPHABETICAL ORDER
+        ###############################
+        ####    OPTION CHECKBOXES   ###
+        ###############################
 
-        # category_list = sorted(category_list)
-        html.append('<input type="checkbox" id = "check_all" href="{}"/>check all</td>')
-        html.append('<input type="checkbox" id = "show_links" href="{}"/>show links</td>')
-        html.append('<thead><tr><th bgcolor= "#c266ff">S</th>')
-        html.append('<th bgcolor= "#c266ff">ID</th>')
-
+        html.append('<input type="checkbox" id = "check_all" />check all</td><br/>')
+        html.append('<input type="checkbox" id = "show_checkboxes" />show checkboxes</td>')
 
 
-        #COLUMN HEADERS
-        html.append('<th bgcolor="#00FFCC">NAME</th>') #just for NAME header
+        html.append('<table id="viewdockx_table" class="tablesorter" style="width:100%">')
+        
+        ###########################
+        ###    COLUMN HEADERS   ###
+        ###########################
 
+        #   WITH CHECKBOX      | S | ID |
+        html.append('<thead><tr>')
+        if checkbox:  
+            html.append('<th bgcolor= "#c266ff">S</th>')
+            html.append('<th bgcolor= "#c266ff">ID</th>')
+
+        #   WITHOUT CHECKBOX   | ID |
+        else:
+            html.append('<th bgcolor= "#c266ff">ID</th>')
+
+
+        #   COLUMN HEADERS    | NAME |...|...|...
+        html.append('<th bgcolor="#00FFCC">NAME</th>') 
         for category in category_list:
             if category.upper() == "NAME":
                 pass
-            else: #all other headers
+            else:
                 html.append('<th style="font-family:arial;" bgcolor="#00FFCC">{}</th>'\
                     .format(category.upper()))
-        html.append("</tr></thead><tbody>")
-        #COLUMN DATA
+        html.append("</tr></thead>")
 
+
+
+
+
+        ########################
+        ###    COLUMN DATA   ###
+        ########################
+        html.append('<tbody>')
         for struct in self.structures:
             try:
                 comment_dict = struct.viewdock_comment
             except AttributeError:  #for files with empty comment sections
                 comment_dict = {}
+
+            # MAKES THE URL FOR EACH STRUCTURE
             html.append("<tr>")
             args = [("atomspec", struct.atomspec())]
             query = urlencode(args)
             url = urlunparse((self.CUSTOM_SCHEME, "", "", "", query, ""))
 
 
-            # html.extend(['<td bgcolor="#ebccff" align="center">',
-            #              '<input type="checkbox" class="checkbox" href="{}"/></td>'.format(url),
-            #
-            #              '<td style="font-family:arial;" bgcolor="#ebccff" align="center">',
-            #              '<a href="{}">model{}</a></td>'.format(url, struct.atomspec())])
+            # WITH CHECKBOX ( NO LINKS ) | [checkbox] | ID Value | 
+            if checkbox:
+                html.extend(['<td bgcolor="#ebccff" align="center">',
+                             '<input type="checkbox" class="checkbox" href="{}"/></td>'.format(url),
 
-            html.extend(['<td bgcolor="#ebccff" align="center">',
-                         '<input type="checkbox" class="checkbox" href="{}"/></td>'.format(url),
+                             '<td style="font-family:arial;" bgcolor="#ebccff" \
+                             align="center">{}</td>'.format(struct.atomspec()[1:])
+                             ])
 
-                         '<td style="font-family:arial;" bgcolor="#ebccff" align="center">{}</td>'.format(struct.atomspec()[1:])
-                         ])
+            # WITHOUT CHECKBOXES ( WITH LINKS ) | ID Value |
+            else:
+                html.extend(['<td style="font-family:arial;" bgcolor="#ebccff" \
+                             align="center"><a href="{}">{}</a></td>'.format(url,\
+                                struct.atomspec()[1:])])
+
 
 
             # ADDING VALUE FOR NAME
@@ -141,7 +169,10 @@ class ViewDockTool(ToolInstance):
                 except KeyError:
                     html.append('<td style="font-family:arial;" align="center">missing</td>')
             html.append("</tr>")
-        html.append("</tbody></table>")
+        html.append("</tbody>")
+        html.append("</table>")
+
+
         html.append("""<script>
                 $(document).ready(function() 
                     { 
@@ -150,35 +181,55 @@ class ViewDockTool(ToolInstance):
                 );
                 </script>""")
 
+
+        # to enable checkboxes 
         html.append("""<script>
-                $(".checkbox").click(function(){
+                $("#show_checkboxes").click(function(){
 
                 if($(this).is(":checked")){
-                    window.location=$(this).attr('href')+"&display=1"
+                    window.location="viewdockx:?show_checkboxes=true"                    
                 }
                 else{
-                    window.location=$(this).attr('href')+"&display=0"
+                    window.location="viewdockx:?show_checkboxes=false"                    
                 }
 
                 });
                 </script>""")
-        html.append("""<script>
-                $("#check_all").click(function(){
 
-                if($(this).is(":checked")){
-                    $(".checkbox").prop('checked', true);
-                    window.location="viewdockx:?show_all=true"
-                }
-                else{
-                    $(".checkbox").prop('checked', false);
-                    window.location="viewdockx:?show_all=false"
-                }
 
-                });
-                </script>""")
+        # for each invididual structure 
+        if checkbox:
+            html.append("""<script>
+                    $(".checkbox").click(function(){
+
+                    if($(this).is(":checked")){
+                        window.location=$(this).attr('href')+"&display=1"
+                    }
+                    else{
+                        window.location=$(this).attr('href')+"&display=0"
+                    }
+
+                    });
+                    </script>""")
+        # to show all or hide all structures
+            html.append("""<script>
+                    $("#check_all").click(function(){
+
+                    if($(this).is(":checked")){
+                        $(".checkbox").prop('checked', true);
+                        window.location="viewdockx:?show_all=true"
+                    }
+                    else{
+                        $(".checkbox").prop('checked', false);
+                        window.location="viewdockx:?show_all=false"
+                    }
+
+                    });
+                    </script>""")
         self.html_view.setHtml('\n'.join(html))
 
-        # print('\n'.join(html))
+
+        print('\n'.join(html))
 
 
 
@@ -204,6 +255,14 @@ class ViewDockTool(ToolInstance):
             if "show_all" in query.keys():
                 show_all = query["show_all"][0]
                 self.session.ui.thread_safe(self._checkall, show_all)
+            elif "show_checkboxes" in query.keys():
+                print(query)
+                if query["show_checkboxes"][0] == "true":
+                    self.session.ui.thread_safe(self._update_models, checkbox=True)
+                else:
+                    self.session.ui.thread_safe(self._update_models, checkbox=False)
+                    
+                # structures, text, remainder = StructuresArg.parse(atomspec, self.session)
             else:
                 # try:
                 atomspec = query["atomspec"][0]
@@ -225,23 +284,26 @@ class ViewDockTool(ToolInstance):
 
 
         if disp == "0":
-            for s in self.structures:
-                if structures[0] == s:
-                    s.display = False
+            for struct in self.structures:
+                if structures[0] == struct:
+                    struct.display = False
+        # elif disp == "2":
+        #     for struct in self.structures:
+        #         struct.display = struct in structures
         else:
-            for s in self.structures:
-                if structures[0] == s:
-                    s.display = True
+            for struct in self.structures:
+                if structures[0] == struct:
+                    struct.display = True
 
     def _checkall(self, show_all):
 
         if show_all == "true":
-            for s in self.structures:
-                s.display = True
+            for struct in self.structures:
+                struct.display = True
 
         else:
-            for s in self.structures:
-                s.display = False
+            for struct in self.structures:
+                struct.display = False
 
 
 
