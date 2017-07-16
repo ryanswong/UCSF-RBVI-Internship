@@ -81,9 +81,12 @@ class ViewDockTool(ToolInstance):
         ###############################
         ####    OPTION CHECKBOXES   ###
         ###############################
+        if checkbox:
+            html.append('<input type="checkbox" id = "show_checkboxes" checked="checked"/>show checkboxes</td>')
+            html.append('<input type="checkbox" id = "check_all" />check all</td>')
 
-        html.append('<input type="checkbox" id = "check_all" />check all</td><br/>')
-        html.append('<input type="checkbox" id = "show_checkboxes" />show checkboxes</td>')
+        else:
+            html.append('<input type="checkbox" id = "show_checkboxes" />show checkboxes</td>')
 
 
         html.append('<table id="viewdockx_table" class="tablesorter" style="width:100%">')
