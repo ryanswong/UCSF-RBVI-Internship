@@ -27,9 +27,9 @@ class _MyAPI(BundleAPI):
 
     # Override method for opening file
     @staticmethod
-    def open_file(session, stream, name):
+    def open_file(session, stream, file_name):
         from .io import open_mol2
-        return open_mol2(session, stream, name)
+        return open_mol2(session, stream, file_name)
 
 
 bundle_api = _MyAPI()
