@@ -69,14 +69,14 @@ class ViewDockTool(ToolInstance):
 
 
 
-        # TRANSFERS ALL KEYS INTO A SET THEN A LIST
+        # TRANSFERS ALL KEYS INTO A SET, THEN A LIST
         category_set = set()
         for struct in self.structures:
             try:
                 category_set = {key for key in struct.viewdock_comment}
             except AttributeError:
                 pass
-        category_list = list(category_set)
+        category_list = sorted(list(category_set))
 
         ###############################
         ####    OPTION CHECKBOXES   ###
@@ -95,15 +95,17 @@ class ViewDockTool(ToolInstance):
         ###    COLUMN HEADERS   ###
         ###########################
 
+
+
         #   WITH CHECKBOX      | S | ID |
         html.append('<thead><tr>')
-        if checkbox:  
-            html.append('<th bgcolor= "#c266ff">S</th>')
-            html.append('<th bgcolor= "#c266ff">ID</th>')
+        # if checkbox:  
+        # html.append('<th class="checkbox" bgcolor= "#c266ff">S</th>')
+        html.append('<th bgcolor= "#c266ff">ID</th>')
 
-        #   WITHOUT CHECKBOX   | ID |
-        else:
-            html.append('<th bgcolor= "#c266ff">ID</th>')
+        # #   WITHOUT CHECKBOX   | ID |
+        # else:
+        #     html.append('<th bgcolor= "#c266ff">ID</th>')
 
 
         #   COLUMN HEADERS    | NAME |...|...|...
@@ -137,21 +139,36 @@ class ViewDockTool(ToolInstance):
             url = urlunparse((self.CUSTOM_SCHEME, "", "", "", query, ""))
 
 
-            # WITH CHECKBOX ( NO LINKS ) | [checkbox] | ID Value | 
-            if checkbox:
-                html.extend(['<td bgcolor="#ebccff" align="center">',
-                             '<input type="checkbox" class="checkbox" href="{}"/></td>'.format(url),
+            # # WITH CHECKBOX ( NO LINKS ) | [checkbox] | ID Value | 
+            # html.extend(['<td bgcolor="#ebccff" align="center">',
+            #              '<input type="checkbox" class="checkbox" href="{}"/></td>'.format(url),
 
-                             '<td style="font-family:arial;" bgcolor="#ebccff" \
-                             align="center">{}</td>'.format(struct.atomspec()[1:])
-                             ])
+            #              '<td style="font-family:arial;" bgcolor="#ebccff" \
+            #              align="center">{}</td>'.format(struct.atomspec()[1:])
+            #              ])
 
-            # WITHOUT CHECKBOXES ( WITH LINKS ) | ID Value |
-            else:
-                html.extend(['<td style="font-family:arial;" bgcolor="#ebccff" \
-                             align="center"><a href="{}">{}</a></td>'.format(url,\
-                                struct.atomspec()[1:])])
+            # # WITHOUT CHECKBOXES ( WITH LINKS ) | ID Value |
+            # # else:
+            # html.extend(['<td style="font-family:arial;" bgcolor="#ebccff" \
+            #              align="center"><a href="{}">{}</a></td>'.format(url,\
+            #                 struct.atomspec()[1:])])
 
+            # NEW CODE
+            html.extend(['<td bgcolor="#ebccff" align="center">',
+                         # '<input type="checkbox" class="checkbox" href="{}"/></td>'.format(url),
+
+                         # for checkboxes
+                         '<span <input type="checkbox" class="checkbox" href="{}" \
+                         class="link" style="font-family:arial;" bgcolor="#ebccff" \
+                         align="left">{}</span>'.format(url, struct.atomspec()[1:]),
+                         # for links only
+                         '<span class="link" style="font-family:arial;" bgcolor="#ebccff" \
+                         align="center"><a href="{}">{}</a></span>'.format(url,\
+                            struct.atomspec()[1:]),
+                         '</td>']),
+
+
+                         
 
 
             # ADDING VALUE FOR NAME
@@ -163,7 +180,7 @@ class ViewDockTool(ToolInstance):
                     except KeyError:
                         html.append('<td align="center">missing</td>')
 
-            #ADDING THE REST
+            # ADDING THE REST
             for category in category_list:
                 try:
                     if category.upper() != "NAME":
@@ -181,60 +198,60 @@ class ViewDockTool(ToolInstance):
                     { 
                         $("#viewdockx_table").tablesorter(); 
                     } 
-                );
-                </script>""")
+                );""")
 
 
         # to enable checkboxes 
-        html.append("""<script>
-                $("#show_checkboxes").click(function(){
+        html.append("""$("#show_checkboxes").click(function(){
 
                 if($(this).is(":checked")){
-                    window.location="viewdockx:?show_checkboxes=true"                    
+                    $(".checkbox").show();
+                    $("link").hide();
                 }
                 else{
-                    window.location="viewdockx:?show_checkboxes=false"                    
+                    $(".checkbox").hide();
+                    $("link").show();
                 }
 
                 });
                 </script>""")
 
 
-        # for each invididual structure 
-        if checkbox:
-            html.append("""<script>
-                    $(".checkbox").click(function(){
+        # CHECKBOX for each invididual structure 
 
-                    if($(this).is(":checked")){
-                        window.location=$(this).attr('href')+"&display=1"
-                    }
-                    else{
-                        window.location=$(this).attr('href')+"&display=0"
-                    }
+        html.append("""<script>
+                $(".checkbox").click(function(){
 
-                    });
-                    </script>""")
+                if($(this).is(":checked")){
+                    window.location=$(this).attr('href')+"&display=1"
+                }
+                else{
+                    window.location=$(this).attr('href')+"&display=0"
+                }
+
+                });
+                </script>""")
         # to show all or hide all structures
-            html.append("""<script>
-                    $("#check_all").click(function(){
+        html.append("""<script>
+                $("#check_all").click(function(){
 
-                    if($(this).is(":checked")){
-                        $(".checkbox").prop('checked', true);
-                        window.location="viewdockx:?show_all=true"
-                    }
-                    else{
-                        $(".checkbox").prop('checked', false);
-                        window.location="viewdockx:?show_all=false"
-                    }
+                if($(this).is(":checked")){
+                    $(".checkbox").prop('checked', true);
+                    window.location="viewdockx:?show_all=true"
+                }
+                else{
+                    $(".checkbox").prop('checked', false);
+                    window.location="viewdockx:?show_all=false"
+                }
 
-                    });
-                    </script>""")
+                });
+                </script>""")
         self.html_view.setHtml('\n'.join(html))
 
 
         print('\n'.join(html))
 
-
+        
 
 
 
@@ -258,12 +275,11 @@ class ViewDockTool(ToolInstance):
             if "show_all" in query.keys():
                 show_all = query["show_all"][0]
                 self.session.ui.thread_safe(self._checkall, show_all)
-            elif "show_checkboxes" in query.keys():
-                print(query)
-                if query["show_checkboxes"][0] == "true":
-                    self.session.ui.thread_safe(self._update_models, checkbox=True)
-                else:
-                    self.session.ui.thread_safe(self._update_models, checkbox=False)
+            # elif "show_checkboxes" in query.keys():
+            #     if query["show_checkboxes"][0] == "true":
+            #         self.session.ui.thread_safe(self._update_models, checkbox=True)
+            #     else:
+            #         self.session.ui.thread_safe(self._update_models, checkbox=False)
                     
                 # structures, text, remainder = StructuresArg.parse(atomspec, self.session)
             else:
