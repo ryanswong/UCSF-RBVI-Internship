@@ -81,12 +81,12 @@ class ViewDockTool(ToolInstance):
         ###############################
         ####    OPTION CHECKBOXES   ###
         ###############################
-        if checkbox:
-            html.append('<input type="checkbox" id = "show_checkboxes" checked="checked"/>show checkboxes</td>')
-            html.append('<input type="checkbox" id = "check_all" />check all</td>')
+        # if checkbox:
+        html.append('<input type="checkbox" id = "show_checkboxes"/>show checkboxes</>')
+        html.append('<input type="checkbox" class= ="checkbox" id = "check_all" />check all</>')
 
-        else:
-            html.append('<input type="checkbox" id = "show_checkboxes" />show checkboxes</td>')
+        # else:
+        #     html.append('<input type="checkbox" id = "show_checkboxes" />show checkboxes</td>')
 
 
         html.append('<table id="viewdockx_table" class="tablesorter" style="width:100%">')
@@ -154,16 +154,15 @@ class ViewDockTool(ToolInstance):
             #                 struct.atomspec()[1:])])
 
             # NEW CODE
-            html.extend(['<td bgcolor="#ebccff" align="center">',
-                         # '<input type="checkbox" class="checkbox" href="{}"/></td>'.format(url),
+            html.extend(['<td bgcolor="#ebccff" align="left">',
+                         # '<input type="checkbox" class="checkbox" href="{}"/></t>d'.format(url),
 
-                         # for checkboxes
-                         '<span <input type="checkbox" class="checkbox" href="{}" \
-                         class="link" style="font-family:arial;" bgcolor="#ebccff" \
-                         align="left">{}</span>'.format(url, struct.atomspec()[1:]),
-                         # for links only
-                         '<span class="link" style="font-family:arial;" bgcolor="#ebccff" \
-                         align="center"><a href="{}">{}</a></span>'.format(url,\
+                         # for checkboxes + atomspec
+                         '<span style="display:none; white-space: nowrap" class="checkbox"><input class="checkbox" type="checkbox" href="{}"/>\
+                         {}</span>'.format(url, struct.atomspec()[1:]),
+
+                         # for atomspec links only
+                         '<span class="link"><a href="{}">{}</a></span>'.format(url,
                             struct.atomspec()[1:]),
                          '</td>']),
 
@@ -206,11 +205,11 @@ class ViewDockTool(ToolInstance):
 
                 if($(this).is(":checked")){
                     $(".checkbox").show();
-                    $("link").hide();
+                    $(".link").hide();
                 }
                 else{
                     $(".checkbox").hide();
-                    $("link").show();
+                    $(".link").show();
                 }
 
                 });
