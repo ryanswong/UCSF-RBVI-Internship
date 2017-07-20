@@ -41,6 +41,13 @@ class ViewDockTool(ToolInstance):
         # Go!
         self._update_models()
 
+    def delete(self):
+        t = self.session.triggers
+        if self._remove_handler:
+            t.remove_handler(self._remove_handler)
+            self._remove_handler = None
+        super().delete()
+
     def _update_models(self, trigger=None, trigger_data=None, checkbox=None):
         # Called to update page with current list of models
         import urllib.parse
@@ -54,6 +61,9 @@ class ViewDockTool(ToolInstance):
             for struct in self.structures:
                 if struct in trigger_data:
                     self.structures.remove(struct)
+            if not self.structures:
+                self.delete()
+                return
 
         html = ['<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>',
                 '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.15/js/jquery.tablesorter.js"></script>',
@@ -61,11 +71,17 @@ class ViewDockTool(ToolInstance):
                 "<ul>"]
 
         html.append("""<style>
-                        table, th, td {
-                            border: 1px solid grey;
-                            border-collapse: collapse;
-                        }
-                        </style>""")
+                    table, th, td {
+                    border: 1px solid grey;
+                    border-collapse: collapse;}
+
+                    th { background-color: #00FFCC; font-family:arial;}
+                    td { background-color: #CCFFF5; text-align: center; font-family:arial;}
+                    th.id { background-color: #c266ff; text-align: center;}
+                    td.id {background-color: #ebccff; text-align: left;}
+                    .checkbox {display: none; white-space: nowrap}
+
+                    </style>""")
 
 
 
@@ -78,16 +94,14 @@ class ViewDockTool(ToolInstance):
                 pass
         category_list = sorted(list(category_set))
 
-        ###############################
-        ####    OPTION CHECKBOXES   ###
-        ###############################
-        # if checkbox:
-        html.append('<input type="checkbox" id = "show_checkboxes"/>show checkboxes</>')
-        html.append('<input type="checkbox" class= ="checkbox" id = "check_all" />check all</>')
+        html.append('<input type="checkbox" id="show_checkboxes"/>show checkboxes</>')
+        html.append('<span class="checkbox"><input type="checkbox" id="check_all" />check all</></span>')
 
-        # else:
-        #     html.append('<input type="checkbox" id = "show_checkboxes" />show checkboxes</td>')
 
+
+        ####################
+        ####    TABLE   ####
+        ####################
 
         html.append('<table id="viewdockx_table" class="tablesorter" style="width:100%">')
         
@@ -95,32 +109,19 @@ class ViewDockTool(ToolInstance):
         ###    COLUMN HEADERS   ###
         ###########################
 
-
-
-        #   WITH CHECKBOX      | S | ID |
+        #   COLUMN HEADER    | ID |
         html.append('<thead><tr>')
-        # if checkbox:  
-        # html.append('<th class="checkbox" bgcolor= "#c266ff">S</th>')
-        html.append('<th bgcolor= "#c266ff">ID</th>')
-
-        # #   WITHOUT CHECKBOX   | ID |
-        # else:
-        #     html.append('<th bgcolor= "#c266ff">ID</th>')
-
+        html.append('<th class="id">ID</th>')
 
         #   COLUMN HEADERS    | NAME |...|...|...
-        html.append('<th bgcolor="#00FFCC">NAME</th>') 
+        html.append('<th>NAME</th>') 
         for category in category_list:
             if category.upper() == "NAME":
                 pass
             else:
-                html.append('<th style="font-family:arial;" bgcolor="#00FFCC">{}</th>'\
+                html.append('<th>{}</th>'\
                     .format(category.upper()))
         html.append("</tr></thead>")
-
-
-
-
 
         ########################
         ###    COLUMN DATA   ###
@@ -133,32 +134,16 @@ class ViewDockTool(ToolInstance):
                 comment_dict = {}
 
             # MAKES THE URL FOR EACH STRUCTURE
-            html.append("<tr>")
             args = [("atomspec", struct.atomspec())]
             query = urlencode(args)
             url = urlunparse((self.CUSTOM_SCHEME, "", "", "", query, ""))
 
-
-            # # WITH CHECKBOX ( NO LINKS ) | [checkbox] | ID Value | 
-            # html.extend(['<td bgcolor="#ebccff" align="center">',
-            #              '<input type="checkbox" class="checkbox" href="{}"/></td>'.format(url),
-
-            #              '<td style="font-family:arial;" bgcolor="#ebccff" \
-            #              align="center">{}</td>'.format(struct.atomspec()[1:])
-            #              ])
-
-            # # WITHOUT CHECKBOXES ( WITH LINKS ) | ID Value |
-            # # else:
-            # html.extend(['<td style="font-family:arial;" bgcolor="#ebccff" \
-            #              align="center"><a href="{}">{}</a></td>'.format(url,\
-            #                 struct.atomspec()[1:])])
-
-            # NEW CODE
-            html.extend(['<td bgcolor="#ebccff" align="left">',
-                         # '<input type="checkbox" class="checkbox" href="{}"/></t>d'.format(url),
-
-                         # for checkboxes + atomspec
-                         '<span style="display:none; white-space: nowrap" class="checkbox"><input class="checkbox" type="checkbox" href="{}"/>\
+            # ADDING ID VALUE
+            html.append("<tr>")
+            html.extend(['<td class="id">',
+                         # for checkbox + atomspec string
+                         '<span style="display:none; white-space: nowrap" class="checkbox">\
+                         <input class="checkbox, struct" type="checkbox" href="{}"/>\
                          {}</span>'.format(url, struct.atomspec()[1:]),
 
                          # for atomspec links only
@@ -166,42 +151,38 @@ class ViewDockTool(ToolInstance):
                             struct.atomspec()[1:]),
                          '</td>']),
 
-
-                         
-
-
             # ADDING VALUE FOR NAME
             for category in category_list:
                 if category.upper() == "NAME":
                     try:
-                        html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'\
-                            .format(comment_dict[category]))
+                        html.append('<td>{}</td>'.format(comment_dict[category]))
                     except KeyError:
-                        html.append('<td align="center">missing</td>')
+                        html.append('<td>missing</td>')
 
             # ADDING THE REST
             for category in category_list:
                 try:
                     if category.upper() != "NAME":
-                        html.append('<td bgcolor = "#CCFFF5" align="center">{}</td>'\
+                        html.append('<td>{}</td>'\
                             .format(comment_dict[category]))
                 except KeyError:
-                    html.append('<td style="font-family:arial;" align="center">missing</td>')
+                    html.append('<td>missing</td>')
             html.append("</tr>")
         html.append("</tbody>")
         html.append("</table>")
 
 
-        html.append("""<script>
-                $(document).ready(function() 
-                    { 
-                        $("#viewdockx_table").tablesorter(); 
-                    } 
-                );""")
 
 
-        # to enable checkboxes 
-        html.append("""$("#show_checkboxes").click(function(){
+        html.append("""
+            <script>
+            $(document).ready(function() 
+                { 
+                    $("#viewdockx_table").tablesorter(); 
+                } 
+            );
+
+            $("#show_checkboxes").click(function(){
 
                 if($(this).is(":checked")){
                     $(".checkbox").show();
@@ -213,47 +194,69 @@ class ViewDockTool(ToolInstance):
                 }
 
                 });
-                </script>""")
+            </script>
 
+            <script>
+            $(".struct").click(function(){
 
-        # CHECKBOX for each invididual structure 
+            if($(this).is(":checked")){
+                window.location=$(this).attr('href')+"&display=1";
+            }
+            else{
+                window.location=$(this).attr('href')+"&display=0";
+            }
 
-        html.append("""<script>
-                $(".checkbox").click(function(){
+            });
+            </script>
 
-                if($(this).is(":checked")){
-                    window.location=$(this).attr('href')+"&display=1"
-                }
-                else{
-                    window.location=$(this).attr('href')+"&display=0"
-                }
+            <script>
+            $("#check_all").click(function(){
 
+            if($(this).is(":checked")){
+                $(".struct").prop('checked', true);
+                window.location="viewdockx:?show_all=true";
+            }
+            else{
+                $(".struct").prop('checked', false);
+                window.location="viewdockx:?show_all=false";
+            }
+            });
+            </script>
+
+            <script>
+            $("#viewdockx_table tr td").click(function() {
+                //Reset
+                $("#viewdockx_table td, th").removeClass("highlight");
+                //Add highlight class to new column
+                var index = $(this).index();
+                $("#viewdockx_table tr").each(function(i, tr) {
+                    $(tr).find('td, th').eq(index).addClass("highlight");
                 });
-                </script>""")
-        # to show all or hide all structures
-        html.append("""<script>
-                $("#check_all").click(function(){
+                alert($(`#viewdockx_table td:nth-child(${index + 1}`).map(function(){
+                    return $(this).text();
+                }).get());
+            });
+            </script>
 
-                if($(this).is(":checked")){
-                    $(".checkbox").prop('checked', true);
-                    window.location="viewdockx:?show_all=true"
-                }
-                else{
-                    $(".checkbox").prop('checked', false);
-                    window.location="viewdockx:?show_all=false"
-                }
+            <style>
 
-                });
-                </script>""")
+            .highlight {
+              background-color: yellow;
+            }   
+            </style>""")
+
+        # import os
+        # file = os.path.join(os.getcwd(), "viewdockx_frame.html")
+        # # print("printing path", os.path)
+        # print(file)
+        # print(os.path.dirname(os.path.abspath(__file__)))
+        # print(os.path.join(os.path.dirname(os.path(__file__)), "viewdockx_frame.html"))
+        # with open(file, "r") as f:
+        #     template = f
+
+
         self.html_view.setHtml('\n'.join(html))
-
-
         print('\n'.join(html))
-
-        
-
-
-
 
     def _navigate(self, info):
         # Called when link is clicked.
@@ -337,4 +340,14 @@ class ViewDockTool(ToolInstance):
         #         js = ('document.getElementById("output").innerHTML = %s'
         #               % repr(html))
         #         self.html_view.page().runJavaScript(js)
-    
+
+
+# ## TEST PURPOSE ONLY ####
+
+# def test_run(file_name):
+#     import os
+#     file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
+#     with open(file, "r") as stream:
+#         open_mol2(None, stream, file)
+
+# test_run("ras.mol2")

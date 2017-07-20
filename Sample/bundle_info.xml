@@ -14,6 +14,10 @@
 Implements command "sample count" to report number of atoms and bonds.
   </Description>
 
+    <DataFiles>
+      <DataFile>example/*</DataFile>
+      <DataFile>viewdockx_frame.html</DataFile>
+    </DataFiles>
   <!-- Categories is a list where this bundle should appear -->
   <Categories>
     <Category name="General"/>

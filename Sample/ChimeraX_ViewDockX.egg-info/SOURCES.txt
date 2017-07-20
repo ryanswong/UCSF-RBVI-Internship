@@ -9,3 +9,4 @@ src/__init__.py
 src/cmd.py
 src/io.py
 src/tool.py
+src/viewdockx_frame.html
