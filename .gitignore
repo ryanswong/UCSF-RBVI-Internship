@@ -1,4 +1,4 @@
-*/build
-*/ChimeraX_ViewDockX.egg-info
-*/dist
-*/pychache
+ViewDockX/build/
+ViewDockX/ChimeraX_ViewDockX.egg-info/
+ViewDockX/dist/
+ViewDockX/pychache/
