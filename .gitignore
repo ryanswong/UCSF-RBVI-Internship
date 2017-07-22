@@ -1,3 +1,4 @@
-
-Sample/.idea
-Sample/build
+*/build
+*/ChimeraX_ViewDockX.egg-info
+*/dist
+*/pychache
