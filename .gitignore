@@ -1,4 +1,6 @@
-ViewDockX/build/
-ViewDockX/ChimeraX_ViewDockX.egg-info/
-ViewDockX/dist/
-ViewDockX/pychache/
+*
+
+!.gitignore
+!ViewDockX/src/*
+!ViewDockX/src/*/*
+!ViewDockX/src/*/*/*
