@@ -1,11 +1,11 @@
-*
+*.*
 # ViewDockX/build/*
 # ViewDockX/build/lib/chimerax/viewdockx/*
 !.gitignore
 
 # !*.py
 # !ViewDockX
-# !ViewDockX/src
+!ViewDockX/*
 !ViewDockX/src/*
 !ViewDockX/src/*/*
 !ViewDockX/src/*/*/*
