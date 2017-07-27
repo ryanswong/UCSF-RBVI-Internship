@@ -3,6 +3,7 @@ from chimerax.core.atomic import AtomicStructure
 from chimerax.core.tools import ToolInstance
 
 
+
 class ViewDockTool(ToolInstance):
 
     SESSION_ENDURING = False
@@ -146,19 +147,21 @@ class ViewDockTool(ToolInstance):
         table.append("</table>")
 
         import os
+        from PyQt5.QtCore import QUrl
 
         # os.path.join()
 
         dir_path = os.path.dirname(os.path.abspath(__file__))
         lib_path = os.path.join(dir_path, "lib")
 
+        qurl = QUrl.fromLocalFile(os.path.join(dir_path, "viewdockx.html"))
+
         with open(os.path.join(dir_path, "viewdockx_frame.html"), "r") as file:
             template = file.read()
         output = template.replace("TABLE", ('\n'.join(table)))\
-                         .replace("jquery_path", lib_path)\
-                         .replace("tablesorter_path", lib_path)
+                         .replace("urlbase", qurl.url())
+        self.html_view.setHtml(output, qurl)
 
-        self.html_view.setHtml(output)
         # print('\n'.join(template))
         print(output)
 
