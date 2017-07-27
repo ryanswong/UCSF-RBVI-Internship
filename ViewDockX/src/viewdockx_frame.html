@@ -4,6 +4,9 @@
     <base href="urlbase"/>
     <script src="lib/jquery-3.2.1.min.js"></script>
     <script src="lib/jquery.tablesorter.min.js"></script>
+    <script src="viewdock_frame.js"></script>
+    <link rel="stylesheet" type="text/css" href="viewdockx_frame.css">
+
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.15/js/jquery.tablesorter.js"></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script> -->
@@ -14,111 +17,10 @@
 
 <body>
 <h2><font color= "#FF8080">ViewDockX</font></h2>
-<style>
-table, th, td {
-border: 1px solid grey;
-border-collapse: collapse;}
-th { background-color: #00FFCC; font-family:arial;}
-td { background-color: #CCFFF5; text-align: center; font-family:arial;}
-th.id { background-color: #c266ff; text-align: center;}
-td.id {background-color: #ebccff; text-align: left;}
-.checkbox {display: none; white-space: nowrap}text-align-last: 
-</style>
+
 <input type="checkbox" id="show_checkboxes"/>show checkboxes</>
 <span class="checkbox"><input type="checkbox" id="check_all" />check all</></span>
 
 TABLE
 
 
-<script>
-$(document).ready(function() 
-{ 
-$("#viewdockx_table").tablesorter(); 
-} 
-);
-
-$("#show_checkboxes").click(function(){
-
-if($(this).is(":checked")){
-$(".checkbox").show();
-$(".link").hide();
-}
-else{
-$(".checkbox").hide();
-$(".link").show();
-}
-
-});
-</script>
-<script>
-
-$(".struct").click(function(){
-
-if($(this).is(":checked")){
-window.location=$(this).attr('href')+"&display=1";
-}
-else{
-window.location=$(this).attr('href')+"&display=0";
-}
-
-});
-</script>
-
-<script>
-$("#check_all").click(function(){
-
-if($(this).is(":checked")){
-$(".struct").prop('checked', true);
-window.location="viewdockx:?show_all=true";
-}
-else{
-$(".struct").prop('checked', false);
-window.location="viewdockx:?show_all=false";
-}
-});
-</script>
-
-<script>
-$("#viewdockx_table tr td").click(function() {
-//Reset
-$("#viewdockx_table td, th").removeClass("highlight");
-//Add highlight class to new column
-var index = $(this).index();
-$("#viewdockx_table tr").each(function(i, tr) {
-$(tr).find('td, th').eq(index).addClass("highlight");
-});
-alert($(`#viewdockx_table td:nth-child(${index + 1}`).map(function(){
-return $(this).text();
-}).get());
-});
-</script>
-
-<style>
-
-.highlight {
-background-color: yellow;
-} 
-</style>
-
-
-<script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-        datasets: [{
-          label: 'apples',
-          data: [12, 19, 3, 17, 6, 3, 7],
-          backgroundColor: "rgba(153,255,51,0.6)"
-        }, {
-          label: 'oranges',
-          data: [2, 29, 5, 5, 2, 3, 10],
-          backgroundColor: "rgba(255,153,0,0.6)"
-        }]
-      }
-    });
-</script>
-
-</body>
-</html>
