@@ -18,6 +18,8 @@ Implements command "sample count" to report number of atoms and bonds.
       <DataFile>example/*</DataFile>
       <DataFile>lib/*</DataFile>
       <DataFile>viewdockx_frame.html</DataFile>
+      <DataFile>viewdockx_frame.js</DataFile>
+      <DataFile>viewdockx_frame.css</DataFile>
 
       <!-- <DataFile></DataFile> -->
 

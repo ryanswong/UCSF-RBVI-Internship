@@ -162,7 +162,6 @@ class ViewDockTool(ToolInstance):
                          .replace("urlbase", qurl.url())
         self.html_view.setHtml(output, qurl)
 
-        # print('\n'.join(template))
         print(output)
 
     def _navigate(self, info):

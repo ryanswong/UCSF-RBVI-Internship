@@ -6,3 +6,7 @@ td { background-color: #CCFFF5; text-align: center; font-family:arial;}
 th.id { background-color: #c266ff; text-align: center;}
 td.id {background-color: #ebccff; text-align: left;}
 .checkbox {display: none; white-space: nowrap}text-align-last: 
+
+.highlight {
+background-color: yellow;
+} 
