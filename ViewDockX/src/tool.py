@@ -3,7 +3,6 @@ from chimerax.core.atomic import AtomicStructure
 from chimerax.core.tools import ToolInstance
 
 
-
 class ViewDockTool(ToolInstance):
 
     SESSION_ENDURING = False
@@ -77,8 +76,8 @@ class ViewDockTool(ToolInstance):
         ####    TABLE   ####
         ####################
 
-        table = (['<table id="viewdockx_table" \
-            class="tablesorter" style="width:100%">'])
+        table = (
+            ['<table id="viewdockx_table" class="tablesorter" style="width:100%">'])
 
         ###########################
         ###    COLUMN HEADERS   ###
@@ -116,12 +115,12 @@ class ViewDockTool(ToolInstance):
             table.append("<tr>")
             table.extend(['<td class="id">',
                           # for checkbox + atomspec string
-                          '<span style="display:none; white-space: nowrap" class="checkbox">\
-                         <input class="checkbox, struct" type="checkbox" href="{}"/>\
-                         {}</span>'.format(url, struct.atomspec()[1:]),
+                          '<span class="checkbox">'
+                          '<input class="checkbox, struct" type="checkbox" href="{}"/>'
+                          '{}</span>'.format(url, struct.atomspec()[1:]),
 
                           # for atomspec links only
-                          '<span class="link"><a href="{}">{}</a></span>'\
+                          '<span class="link"><a href="{}">{}</a></span>'
                           .format(url, struct.atomspec()[1:]),
                           '</td>'])
 
@@ -162,7 +161,12 @@ class ViewDockTool(ToolInstance):
                          .replace("urlbase", qurl.url())
         self.html_view.setHtml(output, qurl)
 
-        print(output)
+        output_file = os.path.join(
+            "C:/Users/Ryan/Documents/GitHub/UCSF-RBVI-Internship/ViewDockX/src/output-test.html")
+        print(output_file)
+        with open(output_file, "w") as file2:
+            file2.write(output)
+        print("TEST SUCCESS")
 
     def _navigate(self, info):
         # Called when link is clicked.
@@ -241,3 +245,4 @@ class ViewDockTool(ToolInstance):
 #         open_mol2(None, stream, file)
 
 # test_run("ras.mol2")
+# l2")

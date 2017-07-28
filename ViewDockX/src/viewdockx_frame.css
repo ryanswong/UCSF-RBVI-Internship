@@ -7,6 +7,9 @@ th.id { background-color: #c266ff; text-align: center;}
 td.id {background-color: #ebccff; text-align: left;}
 .checkbox {display: none; white-space: nowrap}text-align-last: 
 
-.highlight {
+.highlight{
+background-color: yellow;
+} 
+.selected{
 background-color: yellow;
 } 

@@ -1,25 +1,22 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <base href="urlbase"/>
-        <script src="lib/jquery-3.2.1.min.js"></script>
-        <script src="lib/jquery.tablesorter.min.js"></script>
-        <script src="lib/Chart.bundle.min.js"></script>
-        <script src="viewdockx_frame.js"></script>
-        <link rel="stylesheet" type="text/css" href="viewdockx_frame.css">
-    </head>
 
-    <body onload="init();">
-        <h2><font color= "#FF8080">ViewDockX</font></h2>
+<head>
+    <base href="urlbase" />
+    <script src="lib/jquery-3.2.1.min.js"></script>
+    <script src="lib/jquery.tablesorter.min.js"></script>
+    <script src="lib/Chart.bundle.min.js"></script>
+    <script src="viewdockx_frame.js"></script>
+    <link rel="stylesheet" type="text/css" href="viewdockx_frame.css">
+</head>
 
-        <input type="checkbox" id="show_checkboxes"/>show checkboxes</>
-        <span class="checkbox"><input type="checkbox" id="check_all" />check all</></span>
-
-        TABLE
-        <canvas id="viewdockx_chart" width="1600" height="900"></canvas>
-        <canvas id="test_chart" width="1600" height="900"></canvas>
-        <!-- <script>graph();</script> -->
-    </body>
+<body onload="init();">
+    <h2><font color= "#FF8080">ViewDockX</font></h2>
+    <input type="checkbox" id="show_checkboxes" />show checkboxes
+    </>
+    <span class="checkbox"><input type="checkbox" id="check_all" />check all</></span>
+    <input id="graph_btn" type="button" value="graph" /> TABLE
+    <canvas id="viewdockx_chart" width="1600" height="900"></canvas>
+</body>
 
 </html>
-

@@ -9,5 +9,7 @@
 !ViewDockX/src/*
 !ViewDockX/src/*/*
 !ViewDockX/src/*/*/*
-
 *.pyc
+ChimeraX_ViewDockX.egg-info
+viewdockx project.sublime-project
+viewdockx project.sublime-workspace

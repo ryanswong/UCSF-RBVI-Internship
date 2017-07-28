@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base href="file:///C:/Users/Ryan/AppData/Local/UCSF/ChimeraX/0.1/site-packages/chimerax/viewdockx/viewdockx.html" />
+    <script src="lib/jquery-3.2.1.min.js"></script>
+    <script src="lib/jquery.tablesorter.min.js"></script>
+    <script src="lib/Chart.bundle.min.js"></script>
+    <script src="viewdockx_frame.js"></script>
+    <link rel="stylesheet" type="text/css" href="viewdockx_frame.css">
+</head>
+
+<body onload="init();">
+    <h2><font color= "#FF8080">ViewDockX</font></h2>
+    <input type="checkbox" id="show_checkboxes" />show checkboxes
+    </>
+    <span class="checkbox"><input type="checkbox" id="check_all" />check all</></span>
+    <input id="graph_btn" type="button" value="graph" />
+    <table id="viewdockx_table" class="tablesorter" style="width:100%">
+        <thead>
+            <tr>
+                <th class="id">ID</th>
+                <th>NAME</th>
+                <th>DESCRIPTION</th>
+                <th>ENERGY SCORE</th>
+                <th>NUMBER</th>
+                <th>RMSD FROM INPUT ORIENTATION (A)</th>
+                <th>REFLECT</th>
+                <th>SOURCE NUM</th>
+                <th>ELECTROSTATIC COMPONENT</th>
+                <th>VAN DER WAALS COMPONENT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.1"/>1.1</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.1">1.1</a></span>
+                </td>
+                <td>MFCD00070103</td>
+                <td>8-(6-AMINOHEXYL)AMINO-ADENOSINE_5'-MONOPHOS-PHATE_LITHIUM_SALT</td>
+                <td>-36.16</td>
+                <td>1</td>
+                <td>47.32</td>
+                <td>0</td>
+                <td>9627</td>
+                <td>-25.88</td>
+                <td>-10.28</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.2"/>1.2</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.2">1.2</a></span>
+                </td>
+                <td>MFCD00037486</td>
+                <td>CYTIDINE-5'-DIPHOSPHOCHOLINE,_SODIUM_SALT</td>
+                <td>-33.94</td>
+                <td>2</td>
+                <td>36.81</td>
+                <td>0</td>
+                <td>5286</td>
+                <td>-15.07</td>
+                <td>-18.87</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.3"/>1.3</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.3">1.3</a></span>
+                </td>
+                <td>MFCD00038590</td>
+                <td>L-THR-LYS-TYR</td>
+                <td>-33.89</td>
+                <td>3</td>
+                <td>35.01</td>
+                <td>0</td>
+                <td>5548</td>
+                <td>-18.49</td>
+                <td>-15.40</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.4"/>1.4</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.4">1.4</a></span>
+                </td>
+                <td>MFCD00064023</td>
+                <td>CYTIDINE_5'-DIPHOSPHOCHOLINE</td>
+                <td>-33.78</td>
+                <td>4</td>
+                <td>33.67</td>
+                <td>0</td>
+                <td>8610</td>
+                <td>-14.94</td>
+                <td>-18.84</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.5"/>1.5</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.5">1.5</a></span>
+                </td>
+                <td>MFCD00065634</td>
+                <td>FMOC-CYS(P-ME-BZL)-OH</td>
+                <td>-32.94</td>
+                <td>5</td>
+                <td>36.00</td>
+                <td>0</td>
+                <td>8909</td>
+                <td>-5.39</td>
+                <td>-27.54</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.6"/>1.6</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.6">1.6</a></span>
+                </td>
+                <td>MFCD00065635</td>
+                <td>FMOC-CYS(PMEOBZL)-OH</td>
+                <td>-32.82</td>
+                <td>6</td>
+                <td>35.44</td>
+                <td>0</td>
+                <td>8910</td>
+                <td>-5.06</td>
+                <td>-27.76</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.7"/>1.7</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.7">1.7</a></span>
+                </td>
+                <td>MFCD00037874</td>
+                <td>H-PRO-VAL-ASP-OH</td>
+                <td>-31.83</td>
+                <td>7</td>
+                <td>34.93</td>
+                <td>0</td>
+                <td>5353</td>
+                <td>-19.83</td>
+                <td>-11.99</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.8"/>1.8</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.8">1.8</a></span>
+                </td>
+                <td>MFCD00065621</td>
+                <td>FMOC-D-ARG(TOS)-OH</td>
+                <td>-31.07</td>
+                <td>8</td>
+                <td>33.87</td>
+                <td>0</td>
+                <td>8902</td>
+                <td>-6.98</td>
+                <td>-24.09</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.9"/>1.9</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.9">1.9</a></span>
+                </td>
+                <td>MFCD00063473</td>
+                <td>THIAMINE_MONOPHOSPHATE_CHLORIDE</td>
+                <td>-30.99</td>
+                <td>9</td>
+                <td>36.09</td>
+                <td>0</td>
+                <td>8563</td>
+                <td>-13.39</td>
+                <td>-17.60</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.10"/>1.10</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.10">1.10</a></span>
+                </td>
+                <td>MFCD00020795</td>
+                <td>3-(4-(2-ETHYL-3-METHYL-5-OXO-3-PYRAZOLIN-1-YL)-PH-CARBAMOYL)-5-NONADECENOIC_ACID</td>
+                <td>-30.97</td>
+                <td>10</td>
+                <td>33.08</td>
+                <td>0</td>
+                <td>2945</td>
+                <td>-8.30</td>
+                <td>-22.67</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.11"/>1.11</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.11">1.11</a></span>
+                </td>
+                <td>MFCD00070396</td>
+                <td>EPIAMASTATIN_HYDROCHLORIDE</td>
+                <td>-30.86</td>
+                <td>11</td>
+                <td>40.76</td>
+                <td>0</td>
+                <td>9668</td>
+                <td>-20.21</td>
+                <td>-10.65</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.12"/>1.12</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.12">1.12</a></span>
+                </td>
+                <td>MFCD00047780</td>
+                <td>ACID_YELLOW_63</td>
+                <td>-30.85</td>
+                <td>12</td>
+                <td>44.54</td>
+                <td>0</td>
+                <td>6558</td>
+                <td>-9.94</td>
+                <td>-20.92</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.13"/>1.13</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.13">1.13</a></span>
+                </td>
+                <td>MFCD00003114</td>
+                <td>ACID_YELLOW_34</td>
+                <td>-30.51</td>
+                <td>13</td>
+                <td>40.53</td>
+                <td>0</td>
+                <td>415</td>
+                <td>-5.37</td>
+                <td>-25.14</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.14"/>1.14</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.14">1.14</a></span>
+                </td>
+                <td>MFCD00056105</td>
+                <td>DI(2,4-DINITROPHENYL)-L-LYSINE</td>
+                <td>-30.15</td>
+                <td>14</td>
+                <td>33.06</td>
+                <td>0</td>
+                <td>7479</td>
+                <td>-8.04</td>
+                <td>-22.11</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.15"/>1.15</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.15">1.15</a></span>
+                </td>
+                <td>MFCD00056715</td>
+                <td>N-T-BOC-NLE-LEU-PHE</td>
+                <td>-30.03</td>
+                <td>15</td>
+                <td>32.41</td>
+                <td>0</td>
+                <td>7579</td>
+                <td>-5.44</td>
+                <td>-24.59</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.16"/>1.16</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.16">1.16</a></span>
+                </td>
+                <td>MFCD00050527</td>
+                <td>CARMINATE,_AMMONIUM</td>
+                <td>-29.83</td>
+                <td>16</td>
+                <td>43.46</td>
+                <td>0</td>
+                <td>6775</td>
+                <td>-10.26</td>
+                <td>-19.57</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.17"/>1.17</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.17">1.17</a></span>
+                </td>
+                <td>MFCD00058549</td>
+                <td>ADENYLYL_5'-PHOSPHORAMIDATE_AMMONIUM_SALT</td>
+                <td>-29.80</td>
+                <td>17</td>
+                <td>40.19</td>
+                <td>0</td>
+                <td>8038</td>
+                <td>-11.20</td>
+                <td>-18.60</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.18"/>1.18</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.18">1.18</a></span>
+                </td>
+                <td>MFCD00056982</td>
+                <td>N6-(6-AMINOHEXYL)ADENOSINE_5'-MONOPHOSPHATE_SODIUM_SALT</td>
+                <td>-29.30</td>
+                <td>18</td>
+                <td>43.34</td>
+                <td>0</td>
+                <td>7626</td>
+                <td>-10.48</td>
+                <td>-18.82</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.19"/>1.19</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.19">1.19</a></span>
+                </td>
+                <td>MFCD00037435</td>
+                <td>N-T-BOC-MET-LEU-PHE</td>
+                <td>-29.28</td>
+                <td>19</td>
+                <td>32.41</td>
+                <td>0</td>
+                <td>5282</td>
+                <td>-4.81</td>
+                <td>-24.47</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.20"/>1.20</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.20">1.20</a></span>
+                </td>
+                <td>MFCD00038537</td>
+                <td>N-ALPHA-FMOC-IM-BENZYL-L-HISTIDINE</td>
+                <td>-28.95</td>
+                <td>20</td>
+                <td>35.14</td>
+                <td>0</td>
+                <td>5536</td>
+                <td>-5.39</td>
+                <td>-23.57</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.21"/>1.21</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.21">1.21</a></span>
+                </td>
+                <td>MFCD00007491</td>
+                <td>ACID_YELLOW_65</td>
+                <td>-28.95</td>
+                <td>21</td>
+                <td>42.88</td>
+                <td>0</td>
+                <td>1118</td>
+                <td>-9.51</td>
+                <td>-19.44</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.22"/>1.22</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.22">1.22</a></span>
+                </td>
+                <td>MFCD00057152</td>
+                <td>N-PHTHALOYL-GLY-DL-TRP</td>
+                <td>-28.83</td>
+                <td>22</td>
+                <td>33.83</td>
+                <td>0</td>
+                <td>7662</td>
+                <td>-5.28</td>
+                <td>-23.55</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.23"/>1.23</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.23">1.23</a></span>
+                </td>
+                <td>MFCD00012117</td>
+                <td>LISSAMINE_GREEN_B</td>
+                <td>-28.36</td>
+                <td>23</td>
+                <td>36.45</td>
+                <td>0</td>
+                <td>1791</td>
+                <td>-13.10</td>
+                <td>-15.26</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.24"/>1.24</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.24">1.24</a></span>
+                </td>
+                <td>MFCD00038568</td>
+                <td>H-MET-ARG-PHE-OH</td>
+                <td>-28.25</td>
+                <td>24</td>
+                <td>32.20</td>
+                <td>0</td>
+                <td>5545</td>
+                <td>-13.38</td>
+                <td>-14.86</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.25"/>1.25</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.25">1.25</a></span>
+                </td>
+                <td>MFCD00058657</td>
+                <td>2'-DEOXYADENYLYL(3'->5')-2'-DEOXYGUANOSINE_AMMONIUM_SALT</td>
+                <td>-28.16</td>
+                <td>25</td>
+                <td>35.79</td>
+                <td>0</td>
+                <td>8070</td>
+                <td>-6.87</td>
+                <td>-21.30</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.26"/>1.26</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.26">1.26</a></span>
+                </td>
+                <td>MFCD00055742</td>
+                <td>Z-GLY-TYR-OH</td>
+                <td>-28.08</td>
+                <td>26</td>
+                <td>34.00</td>
+                <td>0</td>
+                <td>7382</td>
+                <td>-8.96</td>
+                <td>-19.12</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.27"/>1.27</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.27">1.27</a></span>
+                </td>
+                <td>MFCD00058297</td>
+                <td>5-ANDROSTEN-3BETA-OL-17-ONE_HEMISUCCINATE</td>
+                <td>-28.06</td>
+                <td>27</td>
+                <td>32.06</td>
+                <td>0</td>
+                <td>7962</td>
+                <td>-10.14</td>
+                <td>-17.92</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.28"/>1.28</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.28">1.28</a></span>
+                </td>
+                <td>MFCD00065638</td>
+                <td>FMOC-CYS(NPYS)</td>
+                <td>-27.97</td>
+                <td>28</td>
+                <td>35.21</td>
+                <td>0</td>
+                <td>8911</td>
+                <td>-10.00</td>
+                <td>-17.97</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.29"/>1.29</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.29">1.29</a></span>
+                </td>
+                <td>MFCD00020757</td>
+                <td>4-(5-OXO-3-PENTADECYL-2-PYRAZOLIN-1-YL)BENZENESULFONIC_ACID,_SODIUM_SALT</td>
+                <td>-27.91</td>
+                <td>29</td>
+                <td>47.24</td>
+                <td>0</td>
+                <td>2939</td>
+                <td>-8.06</td>
+                <td>-19.85</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.30"/>1.30</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.30">1.30</a></span>
+                </td>
+                <td>MFCD00067535</td>
+                <td>PONTACYL_GREEN</td>
+                <td>-27.86</td>
+                <td>30</td>
+                <td>36.34</td>
+                <td>0</td>
+                <td>9265</td>
+                <td>-13.13</td>
+                <td>-14.73</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.31"/>1.31</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.31">1.31</a></span>
+                </td>
+                <td>MFCD00014324</td>
+                <td>DINONYLNAPHTHALENESULFONIC_ACID</td>
+                <td>-27.78</td>
+                <td>31</td>
+                <td>36.28</td>
+                <td>0</td>
+                <td>2237</td>
+                <td>-8.04</td>
+                <td>-19.74</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.32"/>1.32</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.32">1.32</a></span>
+                </td>
+                <td>MFCD00057452</td>
+                <td>CYTIDINE_5'-DIPHOSPHOETHANOLAMINE_SODIUM_SALT</td>
+                <td>-27.66</td>
+                <td>32</td>
+                <td>37.99</td>
+                <td>0</td>
+                <td>7713</td>
+                <td>-10.36</td>
+                <td>-17.30</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.33"/>1.33</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.33">1.33</a></span>
+                </td>
+                <td>MFCD00069531</td>
+                <td>DANSYL-DL-LEUCINE_CYCLOHEXYLAMMONIUM_SALT</td>
+                <td>-27.46</td>
+                <td>33</td>
+                <td>35.18</td>
+                <td>0</td>
+                <td>9530</td>
+                <td>-11.10</td>
+                <td>-16.35</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.34"/>1.34</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.34">1.34</a></span>
+                </td>
+                <td>MFCD00047189</td>
+                <td>Z-GLY-TRP-OH</td>
+                <td>-27.44</td>
+                <td>34</td>
+                <td>33.55</td>
+                <td>0</td>
+                <td>6512</td>
+                <td>-8.18</td>
+                <td>-19.26</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.35"/>1.35</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.35">1.35</a></span>
+                </td>
+                <td>MFCD00038751</td>
+                <td>BOC-P-AMINO-PHE(Z)-OH</td>
+                <td>-27.42</td>
+                <td>35</td>
+                <td>35.91</td>
+                <td>0</td>
+                <td>5579</td>
+                <td>-11.26</td>
+                <td>-16.16</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.36"/>1.36</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.36">1.36</a></span>
+                </td>
+                <td>MFCD00047024</td>
+                <td>Z-GLY-HIS-OH</td>
+                <td>-27.30</td>
+                <td>36</td>
+                <td>33.48</td>
+                <td>0</td>
+                <td>6501</td>
+                <td>-8.29</td>
+                <td>-19.01</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.37"/>1.37</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.37">1.37</a></span>
+                </td>
+                <td>MFCD00065685</td>
+                <td>FMOC-TYR(2,6-DI-CL-BZL)-OH</td>
+                <td>-27.27</td>
+                <td>37</td>
+                <td>35.63</td>
+                <td>0</td>
+                <td>8933</td>
+                <td>-5.40</td>
+                <td>-21.87</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.38"/>1.38</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.38">1.38</a></span>
+                </td>
+                <td>MFCD00025006</td>
+                <td>4-(N-DODECYL-3-METHYLANILINO)-1-BUTANESULFONIC_ACID,_SODIUM_SALT</td>
+                <td>-27.22</td>
+                <td>38</td>
+                <td>39.70</td>
+                <td>0</td>
+                <td>3548</td>
+                <td>-6.68</td>
+                <td>-20.55</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.39"/>1.39</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.39">1.39</a></span>
+                </td>
+                <td>MFCD00063036</td>
+                <td>S-BENZYL-N-CARBOBENZYLOXY-L-CYSTEINYL-L-TYROSINE</td>
+                <td>-27.22</td>
+                <td>39</td>
+                <td>34.69</td>
+                <td>0</td>
+                <td>8452</td>
+                <td>-10.79</td>
+                <td>-16.42</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.40"/>1.40</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.40">1.40</a></span>
+                </td>
+                <td>MFCD00038770</td>
+                <td>FMOC-GLA(OTBU)2-OH</td>
+                <td>-27.21</td>
+                <td>40</td>
+                <td>36.58</td>
+                <td>0</td>
+                <td>5589</td>
+                <td>-9.32</td>
+                <td>-17.89</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.41"/>1.41</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.41">1.41</a></span>
+                </td>
+                <td>MFCD00037264</td>
+                <td>Z-GLY-PHE-OH</td>
+                <td>-27.17</td>
+                <td>41</td>
+                <td>33.53</td>
+                <td>0</td>
+                <td>5224</td>
+                <td>-8.40</td>
+                <td>-18.76</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.42"/>1.42</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.42">1.42</a></span>
+                </td>
+                <td>MFCD00029894</td>
+                <td>N-(3-METHYL-5-(4-METHYLPHENYLAZO)PHENYL)-3,4,5,6-TETRABROMOPHTHALAMIC_ACID</td>
+                <td>-27.17</td>
+                <td>42</td>
+                <td>32.33</td>
+                <td>0</td>
+                <td>3935</td>
+                <td>-7.31</td>
+                <td>-19.86</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.43"/>1.43</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.43">1.43</a></span>
+                </td>
+                <td>MFCD00057715</td>
+                <td>ISONOPALINE</td>
+                <td>-27.16</td>
+                <td>43</td>
+                <td>34.85</td>
+                <td>0</td>
+                <td>7776</td>
+                <td>-13.53</td>
+                <td>-13.63</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.44"/>1.44</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.44">1.44</a></span>
+                </td>
+                <td>MFCD00070340</td>
+                <td>11BETA-HYDROXYETIOCHOLANOLONE_GLUCURONIDE</td>
+                <td>-27.08</td>
+                <td>44</td>
+                <td>33.14</td>
+                <td>0</td>
+                <td>9660</td>
+                <td>-7.61</td>
+                <td>-19.47</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.45"/>1.45</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.45">1.45</a></span>
+                </td>
+                <td>MFCD00056522</td>
+                <td>5BETA-PREGNANE-3ALPHA,20ALPHA-DIOL_GLUCURONIDE</td>
+                <td>-27.00</td>
+                <td>45</td>
+                <td>33.19</td>
+                <td>0</td>
+                <td>7539</td>
+                <td>-11.29</td>
+                <td>-15.71</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.46"/>1.46</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.46">1.46</a></span>
+                </td>
+                <td>MFCD00056974</td>
+                <td>N6-([6-AMINOHEXYL]-CARBAMOYLMETHYL)-ADENOSINE_5'-MONO-PHOSPHATE_LITHIUM_SALT</td>
+                <td>-26.99</td>
+                <td>46</td>
+                <td>41.52</td>
+                <td>0</td>
+                <td>7625</td>
+                <td>-14.23</td>
+                <td>-12.76</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.47"/>1.47</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.47">1.47</a></span>
+                </td>
+                <td>MFCD00058347</td>
+                <td>ARG-HIS-PHE_DIACETATE_SALT</td>
+                <td>-26.93</td>
+                <td>47</td>
+                <td>46.58</td>
+                <td>0</td>
+                <td>7985</td>
+                <td>-14.23</td>
+                <td>-12.69</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.48"/>1.48</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.48">1.48</a></span>
+                </td>
+                <td>MFCD00037889</td>
+                <td>BOC-D-HIS(DNP)-OH</td>
+                <td>-26.92</td>
+                <td>48</td>
+                <td>32.17</td>
+                <td>0</td>
+                <td>5359</td>
+                <td>-4.40</td>
+                <td>-22.52</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.49"/>1.49</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.49">1.49</a></span>
+                </td>
+                <td>MFCD00005779</td>
+                <td>DIRECT_YELLOW_8</td>
+                <td>-26.82</td>
+                <td>49</td>
+                <td>34.73</td>
+                <td>0</td>
+                <td>863</td>
+                <td>-6.06</td>
+                <td>-20.77</td>
+            </tr>
+            <tr>
+                <td class="id">
+                    <span class="checkbox"><input class="checkbox, struct" type="checkbox" href="viewdockx:?atomspec=%231.50"/>1.50</span>
+                    <span class="link"><a href="viewdockx:?atomspec=%231.50">1.50</a></span>
+                </td>
+                <td>MFCD00057111</td>
+                <td>N4,2'-O-DIBUTYRYLCYTIDINE_3'</td>
+                <td>-26.73</td>
+                <td>50</td>
+                <td>38.88</td>
+                <td>0</td>
+                <td>7636</td>
+                <td>-11.52</td>
+                <td>-15.20</td>
+            </tr>
+        </tbody>
+    </table>
+    <canvas id="viewdockx_chart" width="1600" height="900"></canvas>
+</body>
+
+</html>
