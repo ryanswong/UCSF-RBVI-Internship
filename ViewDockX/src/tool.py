@@ -67,10 +67,10 @@ class ViewDockTool(ToolInstance):
         category_set = set()
         for struct in self.structures:
             try:
-                category_set = {key for key in struct.viewdock_comment}
+                category_set.update({key for key in struct.viewdock_comment})
             except AttributeError:
                 pass
-        category_list = sorted(list(category_set))
+        category_list = sorted(list(category_set), key=str.lower)
 
         ####################
         ####    TABLE   ####
@@ -109,7 +109,11 @@ class ViewDockTool(ToolInstance):
             # MAKES THE URL FOR EACH STRUCTURE
             args = [("atomspec", struct.atomspec())]
             query = urlencode(args)
-            url = urlunparse((self.CUSTOM_SCHEME, "", "", "", query, ""))
+            cb_url = urlunparse((self.CUSTOM_SCHEME, "", "checkbox", "", query, ""))
+            link_url = urlunparse((self.CUSTOM_SCHEME, "", "link", "", query, ""))
+
+            # print(cb_url)
+            # print(link_url)   
 
             # ADDING ID VALUE
             table.append("<tr>")
@@ -117,11 +121,11 @@ class ViewDockTool(ToolInstance):
                           # for checkbox + atomspec string
                           '<span class="checkbox">'
                           '<input class="checkbox, struct" type="checkbox" href="{}"/>'
-                          '{}</span>'.format(url, struct.atomspec()[1:]),
+                          '{}</span>'.format(cb_url, struct.atomspec()[1:]),
 
                           # for atomspec links only
                           '<span class="link"><a href="{}">{}</a></span>'
-                          .format(url, struct.atomspec()[1:]),
+                          .format(link_url, struct.atomspec()[1:]),
                           '</td>'])
 
             # ADDING VALUE FOR NAME
@@ -162,7 +166,7 @@ class ViewDockTool(ToolInstance):
         self.html_view.setHtml(output, qurl)
 
         output_file = os.path.join(
-            "C:/Users/Ryan/Documents/GitHub/UCSF-RBVI-Internship/ViewDockX/src/output-test.html")
+            "C:/Users/Ryan/Documents/GitHub/UCSF-RBVI-Internship/ViewDockX/src/output_test.html")
         print(output_file)
         with open(output_file, "w") as file2:
             file2.write(output)
@@ -171,51 +175,81 @@ class ViewDockTool(ToolInstance):
     def _navigate(self, info):
         # Called when link is clicked.
         # "info" is an instance of QWebEngineUrlRequestInfo
-        from chimerax.core.commands.cli import StructuresArg
         from urllib.parse import parse_qs
         url = info.requestUrl()
         scheme = url.scheme()
+
         if scheme == self.CUSTOM_SCHEME:
             # Intercept our custom scheme.
             # Method may be invoked in a different thread than
             # the main thread where Qt calls may be made.
-
             query = parse_qs(url.query())
-            if "show_all" in query.keys():
-                show_all = query["show_all"][0]
-                self.session.ui.thread_safe(self._checkall, show_all)
-            else:
-                try:
-                    atomspec = query["atomspec"][0]
-                    disp = query["display"][0]
-                except (KeyError, ValueError):
-                    atomspec = "missing"
-                # print("atomspec:", atomspec)
-                # print("checkpoint 3")
-                structures, text, remainder = StructuresArg.parse(
-                    atomspec, self.session)
-                self.session.ui.thread_safe(self._run, structures, disp)
+            path = url.path()
 
-    def _run(self, structures, disp):
-        # ###Execute "sample count" command for given atomspec
-        # from chimerax.core.commands import run
+            function_map = {
+                "check_all" : self.check_all,
+                "checkbox" : self.checkbox,
+                "link" : self.link,
+                "graph" : self.graph
+            }
 
-        # for struct in self.structures:
-        #     struct.display = struct in structures
+            try:
+                function_map[path](query)  
+            except:
+                pass
+
+
+    def check_all(self, query):
+        show_all = query["show_all"][0]
+        self.session.ui.thread_safe(self._run_checkall, show_all)
+
+
+    def checkbox(self, query):
+        from chimerax.core.commands.cli import StructuresArg
+        print(query)
+        try:
+            atomspec = query["atomspec"][0]
+            disp = query["display"][0]
+        except (KeyError, ValueError):
+            atomspec = "missing"
+        structures = StructuresArg.parse(atomspec, self.session)[0]
+
+        self.session.ui.thread_safe(self._run_cb, structures, disp)
+
+
+    def link(self, query):
+        from chimerax.core.commands.cli import StructuresArg
+        try:
+            atomspec = query["atomspec"][0]
+        except (KeyError, ValueError):
+            atomspec = "missing"
+        print("atomspec:", atomspec)
+        structures = StructuresArg.parse(atomspec, self.session)[0]
+
+        self.session.ui.thread_safe(self._run_link, structures)
+
+    def graph(self, query):
+        pass
+
+
+    def _run_cb(self, structures, disp):
 
         if disp == "0":
             for struct in self.structures:
                 if structures[0] == struct:
                     struct.display = False
-        # elif disp == "2":
-        #     for struct in self.structures:
-        #         struct.display = struct in structures
         else:
             for struct in self.structures:
                 if structures[0] == struct:
                     struct.display = True
 
-    def _checkall(self, show_all):
+    def _run_link(self, structures):
+
+
+        for struct in self.structures:
+            struct.display = struct in structures
+
+    def _run_checkall(self, show_all):
 
         if show_all == "true":
             for struct in self.structures:
@@ -236,13 +270,3 @@ class ViewDockTool(ToolInstance):
         #         self.html_view.page().runJavaScript(js)
 
 
-# ## TEST PURPOSE ONLY ####
-
-# def test_run(file_name):
-#     import os
-#     file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
-#     with open(file, "r") as stream:
-#         open_mol2(None, stream, file)
-
-# test_run("ras.mol2")
-# l2")

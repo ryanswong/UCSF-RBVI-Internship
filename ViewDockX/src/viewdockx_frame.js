@@ -29,10 +29,10 @@ function init() {
 
         if ($(this).is(":checked")) {
             $(".struct").prop('checked', true);
-            window.location = "viewdockx:?show_all=true";
+            window.location = "viewdockx:check_all?show_all=true";
         } else {
             $(".struct").prop('checked', false);
-            window.location = "viewdockx:?show_all=false";
+            window.location = "viewdockx:check_all?show_all=false";
         }
     });
 
