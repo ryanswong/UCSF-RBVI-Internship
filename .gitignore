@@ -11,7 +11,7 @@
 !ViewDockX/src/*/*/*
 *.pyc
 
-ViewDockX/src/output-test.html
+ViewDockX/src/output_test.html
 ChimeraX_ViewDockX.egg-info
 viewdockx project.sublime-project
 viewdockx project.sublime-workspace
