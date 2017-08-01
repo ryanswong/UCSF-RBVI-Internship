@@ -50,10 +50,8 @@ class ViewDockTool(ToolInstance):
         super().delete()
 
     def _update_models(self, trigger=None, trigger_data=None):
-        # Called to update page with current list of models
-        from urllib.parse import urlunparse, urlparse, quote, parse_qs, parse_qsl, urlencode
-        # from chimerax.core.atomic import AtomicStructure
-
+        """ Called to update page with current list of models"""
+        from urllib.parse import urlunparse, urlencode
         if trigger_data is not None:
 
             for struct in self.structures:
@@ -76,8 +74,9 @@ class ViewDockTool(ToolInstance):
         ####    TABLE   ####
         ####################
 
-        table = (
-            ['<table id="viewdockx_table" class="tablesorter" style="width:100%">'])
+        table = []
+        table.append(
+            '<table id="viewdockx_table" class="tablesorter" style="width:100%">')
 
         ###########################
         ###    COLUMN HEADERS   ###
@@ -109,11 +108,13 @@ class ViewDockTool(ToolInstance):
             # MAKES THE URL FOR EACH STRUCTURE
             args = [("atomspec", struct.atomspec())]
             query = urlencode(args)
-            cb_url = urlunparse((self.CUSTOM_SCHEME, "", "checkbox", "", query, ""))
-            link_url = urlunparse((self.CUSTOM_SCHEME, "", "link", "", query, ""))
+            cb_url = urlunparse(
+                (self.CUSTOM_SCHEME, "", "checkbox", "", query, ""))
+            link_url = urlunparse(
+                (self.CUSTOM_SCHEME, "", "link", "", query, ""))
 
             # print(cb_url)
-            # print(link_url)   
+            # print(link_url)
 
             # ADDING ID VALUE
             table.append("<tr>")
@@ -155,7 +156,7 @@ class ViewDockTool(ToolInstance):
         # os.path.join()
 
         dir_path = os.path.dirname(os.path.abspath(__file__))
-        lib_path = os.path.join(dir_path, "lib")
+        # lib_path = os.path.join(dir_path, "lib")
 
         qurl = QUrl.fromLocalFile(os.path.join(dir_path, "viewdockx.html"))
 
@@ -167,10 +168,8 @@ class ViewDockTool(ToolInstance):
 
         output_file = os.path.join(
             "C:/Users/Ryan/Documents/GitHub/UCSF-RBVI-Internship/ViewDockX/src/output_test.html")
-        print(output_file)
         with open(output_file, "w") as file2:
             file2.write(output)
-        print("TEST SUCCESS")
 
     def _navigate(self, info):
         # Called when link is clicked.
@@ -187,24 +186,21 @@ class ViewDockTool(ToolInstance):
             path = url.path()
 
             function_map = {
-                "check_all" : self.check_all,
-                "checkbox" : self.checkbox,
-                "link" : self.link,
-                "graph" : self.graph
+                "check_all": self.check_all,
+                "checkbox": self.checkbox,
+                "link": self.link,
+                "graph": self.graph
             }
 
-            try:
-                function_map[path](query)  
-            except:
-                pass
-
+            function_map[path](query)
 
     def check_all(self, query):
+        """shows or hides all structures"""
         show_all = query["show_all"][0]
         self.session.ui.thread_safe(self._run_checkall, show_all)
 
-
     def checkbox(self, query):
+        """shows or hides individual structure"""
         from chimerax.core.commands.cli import StructuresArg
         print(query)
         try:
@@ -216,24 +212,22 @@ class ViewDockTool(ToolInstance):
 
         self.session.ui.thread_safe(self._run_cb, structures, disp)
 
-
     def link(self, query):
+        """shows only selected structure"""
         from chimerax.core.commands.cli import StructuresArg
         try:
             atomspec = query["atomspec"][0]
         except (KeyError, ValueError):
             atomspec = "missing"
-        print("atomspec:", atomspec)
         structures = StructuresArg.parse(atomspec, self.session)[0]
 
         self.session.ui.thread_safe(self._run_link, structures)
 
     def graph(self, query):
+        """open new window to render graph"""
         pass
 
-
     def _run_cb(self, structures, disp):
-
         if disp == "0":
             for struct in self.structures:
                 if structures[0] == struct:
@@ -244,13 +238,10 @@ class ViewDockTool(ToolInstance):
                     struct.display = True
 
     def _run_link(self, structures):
-
-
         for struct in self.structures:
             struct.display = struct in structures
 
     def _run_checkall(self, show_all):
-
         if show_all == "true":
             for struct in self.structures:
                 struct.display = True
@@ -268,5 +259,3 @@ class ViewDockTool(ToolInstance):
         #         js = ('document.getElementById("output").innerHTML = %s'
         #               % repr(html))
         #         self.html_view.page().runJavaScript(js)
-
-
