@@ -29,10 +29,10 @@ function init() {
 
         if ($(this).is(":checked")) {
             $(".struct").prop('checked', true);
-            window.location = "viewdockx:?show_all=true";
+            window.location = "viewdockx:check_all?show_all=true";
         } else {
             $(".struct").prop('checked', false);
-            window.location = "viewdockx:?show_all=false";
+            window.location = "viewdockx:check_all?show_all=false";
         }
     });
 
@@ -61,19 +61,26 @@ function init() {
 
     });
 
+
+    // var vdx_chart=null; 
     $('#graph_btn').on('click', function() {
+        if (typeof vdx_chart != 'undefined') {
+            vdx_chart.destroy();
+        }
         var context = document.getElementById("viewdockx_chart").getContext('2d');
-        var viewdockx_chart = new Chart(context, {
+        vdx_chart = new Chart(context, {
             type: 'line',
             data: {
-                labels: label_array,
+                labels: label_array, //x - axis
                 datasets: [{
                     label: property,
-                    data: data_array
+                    data: data_array //y - axis
                 }]
             }
         });
     });
+
+
 
 
 
@@ -97,3 +104,7 @@ function init() {
 
 
 }
+
+// chart.options.data.push({object}); // Add a new dataSeries
+
+// https://canvasjs.com/docs/charts/basics-of-creating-html5-chart/updating-chart-options/

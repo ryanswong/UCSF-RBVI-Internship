@@ -50,10 +50,8 @@ class ViewDockTool(ToolInstance):
         super().delete()
 
     def _update_models(self, trigger=None, trigger_data=None):
-        # Called to update page with current list of models
-        from urllib.parse import urlunparse, urlparse, quote, parse_qs, parse_qsl, urlencode
-        # from chimerax.core.atomic import AtomicStructure
-
+        """ Called to update page with current list of models"""
+        from urllib.parse import urlunparse, urlencode
         if trigger_data is not None:
 
             for struct in self.structures:
@@ -67,18 +65,21 @@ class ViewDockTool(ToolInstance):
         category_set = set()
         for struct in self.structures:
             try:
+
                 for key in struct.viewdock_comment:
                     category_set.add(key)
+
             except AttributeError:
                 pass
-        category_list = sorted(list(category_set))
+        category_list = sorted(list(category_set), key=str.lower)
 
         ####################
         ####    TABLE   ####
         ####################
 
-        table = (
-            ['<table id="viewdockx_table" class="tablesorter" style="width:100%">'])
+        table = []
+        table.append(
+            '<table id="viewdockx_table" class="tablesorter" style="width:100%">')
 
         ###########################
         ###    COLUMN HEADERS   ###
@@ -110,10 +111,10 @@ class ViewDockTool(ToolInstance):
             # MAKES THE URL FOR EACH STRUCTURE
             args = [("atomspec", struct.atomspec())]
             query = urlencode(args)
+
             #url = urlunparse((self.CUSTOM_SCHEME, "", "", "", query, ""))
             checkbox_url = urlunparse((self.CUSTOM_SCHEME, "", "checkbox", "", query, ""))
             link_url = urlunparse((self.CUSTOM_SCHEME, "", "link", "", query, ""))
-
 
             # ADDING ID VALUE
             table.append("<tr>")
@@ -121,7 +122,9 @@ class ViewDockTool(ToolInstance):
                           # for checkbox + atomspec string
                           '<span class="checkbox">'
                           '<input class="checkbox, struct" type="checkbox" href="{}"/>'
+
                           '{}</span>'.format(checkbox_url, struct.atomspec()[1:]),
+
 
                           # for atomspec links only
                           '<span class="link"><a href="{}">{}</a></span>'
@@ -155,7 +158,7 @@ class ViewDockTool(ToolInstance):
         # os.path.join()
 
         dir_path = os.path.dirname(os.path.abspath(__file__))
-        lib_path = os.path.join(dir_path, "lib")
+        # lib_path = os.path.join(dir_path, "lib")
 
         qurl = QUrl.fromLocalFile(os.path.join(dir_path, "viewdockx.html"))
 
@@ -164,6 +167,7 @@ class ViewDockTool(ToolInstance):
         output = template.replace("TABLE", ('\n'.join(table)))\
                          .replace("urlbase", qurl.url())
         self.html_view.setHtml(output, qurl)
+
 
         # output_file = os.path.join(
         #     "C:/Users/hannahku/Desktop/RBVIInternship/GitHub/UCSF-RBVI-Internship/ViewDockX/src/output-test.html")
@@ -175,61 +179,75 @@ class ViewDockTool(ToolInstance):
     def _navigate(self, info):
         # Called when link is clicked.
         # "info" is an instance of QWebEngineUrlRequestInfo
-        from chimerax.core.commands.cli import StructuresArg
         from urllib.parse import parse_qs
         url = info.requestUrl()
         scheme = url.scheme()
+
         if scheme == self.CUSTOM_SCHEME:
             # Intercept our custom scheme.
             # Method may be invoked in a different thread than
             # the main thread where Qt calls may be made.
-
             query = parse_qs(url.query())
-            if "show_all" in query.keys():
-                show_all = query["show_all"][0]
-                self.session.ui.thread_safe(self._checkall, show_all)
-            else:
-                try:
-                    print(url)
-                    print(query)
-                    atomspec = query["atomspec"][0][1:]
-                    print(atomspec)
-                    #disp = query["display"][0]
-                except (KeyError, ValueError):
-                    atomspec = "missing"
-                try:
-                    disp = query["display"][0]
-                except (KeyError, ValueError):
-                    disp = "missing"
-                print("atomspec:", atomspec)
-                print("checkpoint 3")
-                structures, text, remainder = StructuresArg.parse(
-                    atomspec, self.session)
-                print("checkpoint 4")
+            path = url.path()
 
-                self.session.ui.thread_safe(self._run, structures, disp)
+            function_map = {
+                "check_all": self.check_all,
+                "checkbox": self.checkbox,
+                "link": self.link,
+                "graph": self.graph
+            }
 
-    def _run(self, structures, disp):
-        # ###Execute "sample count" command for given atomspec
-        # from chimerax.core.commands import run
+            function_map[path](query)
 
-        # for struct in self.structures:
-        #     struct.display = struct in structures
+    def check_all(self, query):
+        """shows or hides all structures"""
+        show_all = query["show_all"][0]
+        self.session.ui.thread_safe(self._run_checkall, show_all)
 
+
+    def checkbox(self, query):
+        """shows or hides individual structure"""
+        from chimerax.core.commands.cli import StructuresArg
+        print(query)
+        try:
+            atomspec = query["atomspec"][0]
+            disp = query["display"][0]
+        except (KeyError, ValueError):
+            atomspec = "missing"
+        structures = StructuresArg.parse(atomspec, self.session)[0]
+
+        self.session.ui.thread_safe(self._run_cb, structures, disp)
+
+    def link(self, query):
+        """shows only selected structure"""
+        from chimerax.core.commands.cli import StructuresArg
+        try:
+            atomspec = query["atomspec"][0]
+        except (KeyError, ValueError):
+            atomspec = "missing"
+        structures = StructuresArg.parse(atomspec, self.session)[0]
+
+        self.session.ui.thread_safe(self._run_link, structures)
+
+    def graph(self, query):
+        """open new window to render graph"""
+        pass
+
+    def _run_cb(self, structures, disp):
         if disp == "0":
             for struct in self.structures:
                 if structures[0] == struct:
                     struct.display = False
-        # elif disp == "2":
-        #     for struct in self.structures:
-        #         struct.display = struct in structures
         else:
             for struct in self.structures:
                 if structures[0] == struct:
                     struct.display = True
 
-    def _checkall(self, show_all):
+    def _run_link(self, structures):
+        for struct in self.structures:
+            struct.display = struct in structures
 
+    def _run_checkall(self, show_all):
         if show_all == "true":
             for struct in self.structures:
                 struct.display = True
@@ -247,15 +265,3 @@ class ViewDockTool(ToolInstance):
         #         js = ('document.getElementById("output").innerHTML = %s'
         #               % repr(html))
         #         self.html_view.page().runJavaScript(js)
-
-
-# ## TEST PURPOSE ONLY ####
-
-# def test_run(file_name):
-#     import os
-#     file = os.path.join(os.getcwd(), 'example_files/{}'.format(file_name))
-#     with open(file, "r") as stream:
-#         open_mol2(None, stream, file)
-
-# test_run("ras.mol2")
-# l2")
