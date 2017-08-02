@@ -152,6 +152,7 @@ class ViewDockTool(ToolInstance):
         table.append("</tbody>")
         table.append("</table>")
 
+
         import os
         from PyQt5.QtCore import QUrl
 
