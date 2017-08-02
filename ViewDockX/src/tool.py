@@ -166,8 +166,7 @@ class ViewDockTool(ToolInstance):
                          .replace("urlbase", qurl.url())
         self.html_view.setHtml(output, qurl)
 
-        output_file = os.path.join(
-            "C:/Users/Ryan/Documents/GitHub/UCSF-RBVI-Internship/ViewDockX/src/output_test.html")
+        output_file = os.path.join(dir_path, "output_test.html")
         with open(output_file, "w") as file2:
             file2.write(output)
 
