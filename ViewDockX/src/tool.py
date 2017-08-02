@@ -67,7 +67,8 @@ class ViewDockTool(ToolInstance):
         category_set = set()
         for struct in self.structures:
             try:
-                category_set = {key for key in struct.viewdock_comment}
+                for key in struct.viewdock_comment:
+                    category_set.add(key)
             except AttributeError:
                 pass
         category_list = sorted(list(category_set))
@@ -109,7 +110,10 @@ class ViewDockTool(ToolInstance):
             # MAKES THE URL FOR EACH STRUCTURE
             args = [("atomspec", struct.atomspec())]
             query = urlencode(args)
-            url = urlunparse((self.CUSTOM_SCHEME, "", "", "", query, ""))
+            #url = urlunparse((self.CUSTOM_SCHEME, "", "", "", query, ""))
+            checkbox_url = urlunparse((self.CUSTOM_SCHEME, "", "checkbox", "", query, ""))
+            link_url = urlunparse((self.CUSTOM_SCHEME, "", "link", "", query, ""))
+
 
             # ADDING ID VALUE
             table.append("<tr>")
@@ -117,11 +121,11 @@ class ViewDockTool(ToolInstance):
                           # for checkbox + atomspec string
                           '<span class="checkbox">'
                           '<input class="checkbox, struct" type="checkbox" href="{}"/>'
-                          '{}</span>'.format(url, struct.atomspec()[1:]),
+                          '{}</span>'.format(checkbox_url, struct.atomspec()[1:]),
 
                           # for atomspec links only
                           '<span class="link"><a href="{}">{}</a></span>'
-                          .format(url, struct.atomspec()[1:]),
+                          .format(link_url, struct.atomspec()[1:]),
                           '</td>'])
 
             # ADDING VALUE FOR NAME
@@ -161,12 +165,12 @@ class ViewDockTool(ToolInstance):
                          .replace("urlbase", qurl.url())
         self.html_view.setHtml(output, qurl)
 
-        output_file = os.path.join(
-            "C:/Users/Ryan/Documents/GitHub/UCSF-RBVI-Internship/ViewDockX/src/output-test.html")
-        print(output_file)
-        with open(output_file, "w") as file2:
-            file2.write(output)
-        print("TEST SUCCESS")
+        # output_file = os.path.join(
+        #     "C:/Users/hannahku/Desktop/RBVIInternship/GitHub/UCSF-RBVI-Internship/ViewDockX/src/output-test.html")
+        # print(output_file)
+        # with open(output_file, "w") as file2:
+        #     file2.write(output)
+        # print("TEST SUCCESS")
 
     def _navigate(self, info):
         # Called when link is clicked.
@@ -186,14 +190,23 @@ class ViewDockTool(ToolInstance):
                 self.session.ui.thread_safe(self._checkall, show_all)
             else:
                 try:
-                    atomspec = query["atomspec"][0]
-                    disp = query["display"][0]
+                    print(url)
+                    print(query)
+                    atomspec = query["atomspec"][0][1:]
+                    print(atomspec)
+                    #disp = query["display"][0]
                 except (KeyError, ValueError):
                     atomspec = "missing"
-                # print("atomspec:", atomspec)
-                # print("checkpoint 3")
+                try:
+                    disp = query["display"][0]
+                except (KeyError, ValueError):
+                    disp = "missing"
+                print("atomspec:", atomspec)
+                print("checkpoint 3")
                 structures, text, remainder = StructuresArg.parse(
                     atomspec, self.session)
+                print("checkpoint 4")
+
                 self.session.ui.thread_safe(self._run, structures, disp)
 
     def _run(self, structures, disp):
