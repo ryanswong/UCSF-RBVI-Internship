@@ -6,7 +6,8 @@
 ##########               Energy score                             :     -42.64
 ##########   intermolecular van der Waals                 -21.10
 ##########                  intermolecular electrostatic                 -21.54
-##########                                  RMSD from input orientation (A)          :      40.86
+##########        RMSD from input orientation (A)          :      40.86
+##########			Modification time: Wed Dec 28 00:18:30 1988
 
 @<TRIPOS>MOLECULE
 test_22
