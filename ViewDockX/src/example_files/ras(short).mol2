@@ -1,12 +1,12 @@
-########## Number      : 1
-########## Source num  : 22
-########## Name        : test_22
-########## Description : ribose-monophosphate
+##########          Number      : 1
+##########      Source num  : 22
+##########  Name        : test_22
+##########                  Description : ribose-monophosphate
 ########## Reflect     : 0
-########## Energy score                             :     -42.64
+##########               Energy score                             :     -42.64
 ##########   intermolecular van der Waals                 -21.10
-##########   intermolecular electrostatic                 -21.54
-########## RMSD from input orientation (A)          :      40.86
+##########                  intermolecular electrostatic                 -21.54
+##########                                  RMSD from input orientation (A)          :      40.86
 
 @<TRIPOS>MOLECULE
 test_22
@@ -63,8 +63,6 @@ ribose-monophosphate
 22    8     22    1
 @<TRIPOS>SUBSTRUCTURE
 1   RIBOSE_MONOPHOSPHATE 1     PERM       0   ****  **** 
-
-
 ########## Number      : 2
 ########## Source num  : 27
 ########## Name        : test_27
@@ -76,6 +74,10 @@ ribose-monophosphate
 ########## RMSD from input orientation (A)          :      42.41
 
 @<TRIPOS>MOLECULE
+
+
+
+
 test_27
 47    49    1     0     0    
 SMALL
