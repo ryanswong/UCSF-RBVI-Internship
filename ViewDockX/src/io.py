@@ -40,21 +40,12 @@ def _read_block(session, stream):
     comment_dict, molecular_dict = read_com_and_mol(session, stream)
     if not molecular_dict:
         return None
-    print_dict(comment_dict)
-    print_dict(molecular_dict)
-
 
     atom_dict = read_atom(session, stream)
-    print_dict(atom_dict)
-
 
     bond_dict = read_bond(session, stream)
-    print_dict(bond_dict)
-
 
     subst_dict = read_subst(session, stream) #pass in # of substructures
-    if subst_dict:
-        print_dict(subst_dict)
     if not subst_dict:
         subst_dict = {}
         subst_set = set()
@@ -62,8 +53,6 @@ def _read_block(session, stream):
             subst_set.update([(i[5], i[6])])
         for i in subst_set:
             subst_dict[i[0]] = [i[1], None, None, None, None, '****']
-
-        print_dict(subst_dict)
 
 
     s = AtomicStructure(session)
