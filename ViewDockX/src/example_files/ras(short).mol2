@@ -39,6 +39,7 @@ ribose-monophosphate
 20    H7       5.8930   34.0403   22.0214 H       1 RIBOSE_MONOPHOSPHATE   0.0590
 21    H8       9.9227   37.8616   19.9411 H       1 RIBOSE_MONOPHOSPHATE   0.2100
 22    H9       6.7213   37.3406   19.3480 H       1 RIBOSE_MONOPHOSPHATE   0.2100
+
 @<TRIPOS>BOND
 1     1     2     1
 2     1     6     1
@@ -75,10 +76,6 @@ ribose-monophosphate
 ########## RMSD from input orientation (A)          :      42.41
 
 @<TRIPOS>MOLECULE
-
-
-
-
 test_27
 47    49    1     0     0    
 SMALL
@@ -133,6 +130,7 @@ vitamin B2
 45    H18     13.3994   32.6549   18.3376 H       1 VITAMIN_B2   0.2100
 46    H19     15.8173   36.1340   19.8240 H       1 VITAMIN_B2   0.2100
 47    H20     16.7390   32.5965   16.9331 H       1 VITAMIN_B2   0.2095
+
 @<TRIPOS>BOND
 1     1     2     1
 2     1     14    2

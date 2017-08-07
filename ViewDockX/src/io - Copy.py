@@ -43,16 +43,17 @@ def _read_block(session, stream):
     print_dict(molecular_dict)
 
 
-    atom_dict = read_atom(session, stream, int(molecular_dict["num_atoms"]))
+    atom_dict = read_atom(session, stream)
     print_dict(atom_dict)
 
 
-    bond_dict = read_bond(session, stream, int(molecular_dict["num_bonds"]))
+    bond_dict = read_bond(session, stream)
     print_dict(bond_dict)
 
 
-    # substructure_dict = read_substructure(session, stream, int(molecular_dict["num_subst"])) #pass in # of substructures
-    # print_dict(substructure_dict)
+    substructure_dict = read_substructure(session, stream, int(molecular_dict["num_subst"])) #pass in # of substructures
+    if substructure_dict:
+        print_dict(substructure_dict)
 
 
     # s = AtomicStructure(session)
@@ -160,32 +161,19 @@ def read_com_and_mol(session, stream):
     return comment_dict, molecular_dict
 
 
-def read_atom(session, stream, atom_count):
+def read_atom(session, stream):
     """parses atom section"""
 
-    import ast
     while "@<TRIPOS>ATOM" not in stream.readline():
         pass
 
-
     atom_dict = {}
-
-    # for _ in range(atom_count):
-    #     atom_line = stream.readline().strip()
-    #     if len(atom_line) == 0:
-    #         print("error: no line found")
-    #     parts = atom_line.split()
-    #     # parts wil be like, ['1', 'C1', 9.4819, 36.0139, 21.8847, 'C.3', 1, 'RIBOSE_MONOPHOSPHATE', 0.0767]
-    #     if len(parts) not in range(6, 11): # gives error msg if there aren't enough entries
-    #         print("error: not enough entries on line: ", atom_line)
-    #         return None
-
 
     while True:
         last_pos = stream.tell()
         atom_line = stream.readline().strip()
 
-        if "@<TRIPOS>BOND" in atom_line:
+        if "@" in atom_line:
             stream.seek(last_pos)
             break
         if len(atom_line) == 0:
@@ -193,7 +181,7 @@ def read_atom(session, stream, atom_count):
         parts = atom_line.split()
         # parts wil be like, ['1', 'C1', 9.4819, 36.0139, 21.8847, 'C.3', 1, 'RIBOSE_MONOPHOSPHATE', 0.0767]
         if len(parts) not in range(6, 11): # gives error msg if there aren't enough entries
-            print("error: not enough entries on line: ", atom_line)
+            print("error: not enough or too many entries on a line")
             return None
 
         atom_dict[(parts[0])] = parts[1:]
@@ -205,7 +193,7 @@ def read_atom(session, stream, atom_count):
 
     return atom_dict
 
-def read_bond(session, stream, bond_count):
+def read_bond(session, stream):
     """parses bond section"""
 
     while "@<TRIPOS>BOND" not in stream.readline():
@@ -213,7 +201,7 @@ def read_bond(session, stream, bond_count):
 
     bond_dict = {}
 
-    for _ in range(bond_count):
+    while True:
         bond_line = stream.readline()
         parts = bond_line.split()
         if len(parts) != 4:
@@ -224,13 +212,27 @@ def read_bond(session, stream, bond_count):
 
         bond_dict[parts[0]] = parts[1:3]
 
+    # for _ in range(bond_count):
+    #     bond_line = stream.readline()
+    #     parts = bond_line.split()
+    #     if len(parts) != 4:
+    #         print("error: not enough entries in under bond data")
+    #     if not isinstance(int(parts[0]), int):
+    #         print("error: first value is needs to be an integer")
+    #         return None
+
+        bond_dict[parts[0]] = parts[1:3]
+
     return bond_dict
 
 def read_substructure(session, stream, num_subst):
     """parses substructure section"""
+    subst_line = stream.readline()
 
-    while "@<TRIPOS>SUBSTRUCTURE" not in stream.readline():
-        pass
+    while "@<TRIPOS>SUBSTRUCTURE" not in subst_line:
+        if "#" in subst_line:
+            return None
+        subst_line = stream.readline()
 
     for _ in range(num_subst):
         substructure_dict = {}
