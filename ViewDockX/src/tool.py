@@ -148,6 +148,22 @@ class ViewDockTool(ToolInstance):
             table.append("</tr>")
         table.append("</tbody>")
         table.append("</table>")
+        table.append("""<meta charset="utf-8">
+                <style>
+                
+                .bar rect {
+                  fill: steelblue;
+                }
+                
+                .bar text {
+                  fill: #fff;
+                  font: 10px sans-serif;
+                }
+                
+                </style>
+                <svg width="960" height="500"></svg>
+                <script src="https://d3js.org/d3.v4.min.js"></script>
+                <script>""")
 
 
         import os
