@@ -65,10 +65,7 @@ class ViewDockTool(ToolInstance):
         category_set = set()
         for struct in self.structures:
             try:
-
-                for key in struct.viewdock_comment:
-                    category_set.add(key)
-
+                category_set.update({key for key in struct.viewdock_comment})
             except AttributeError:
                 pass
         category_list = sorted(list(category_set), key=str.lower)
@@ -199,6 +196,7 @@ class ViewDockTool(ToolInstance):
             }
 
             function_map[path](query)
+            # self.session.ui.thread_safe(function_map[path](query))
 
     def check_all(self, query):
         """shows or hides all structures"""

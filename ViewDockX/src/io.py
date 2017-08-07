@@ -17,6 +17,12 @@ def open_mol2(session, stream, name):
               (len(structures), atoms, bonds))
     return structures, status
 
+def print_dict(dict):
+    # print(s)
+    for key, value in dict.items():
+        print(key, ":", value,)
+    print()
+
 
 def _read_block(session, stream):
     """function that calls subfunctions that each read a specific section of the mol2 file"""
@@ -29,17 +35,40 @@ def _read_block(session, stream):
     from numpy import (array, float64)
     from chimerax.core.atomic import AtomicStructure
 
+    # print("TEST1")
+
     comment_dict, molecular_dict = read_com_and_mol(session, stream)
     if not molecular_dict:
         return None
-    atom_dict = read_atom(session, stream, int(molecular_dict["num_atoms"]))
-    bond_dict = read_bond(session, stream, int(molecular_dict["num_bonds"]))
-    substructure_dict = read_substructure(session, stream, int(molecular_dict["num_subst"])) #pass in # of substructures
+    print_dict(comment_dict)
+    print_dict(molecular_dict)
+
+
+    atom_dict = read_atom(session, stream)
+    print_dict(atom_dict)
+
+
+    bond_dict = read_bond(session, stream)
+    print_dict(bond_dict)
+
+
+    subst_dict = read_subst(session, stream) #pass in # of substructures
+    if subst_dict:
+        print_dict(subst_dict)
+    if not subst_dict:
+        subst_dict = {}
+        subst_set = set()
+        for i in atom_dict.values():
+            subst_set.update([(i[5], i[6])])
+        for i in subst_set:
+            subst_dict[i[0]] = [i[1], None, None, None, None, '****']
+
+        print_dict(subst_dict)
 
 
     s = AtomicStructure(session)
 
-    csd = build_residues(s, substructure_dict)
+    csd = build_residues(s, subst_dict)
     cad = build_atoms(s, csd, atom_dict)
     build_bonds(s, cad, bond_dict)
     s.viewdock_comment = comment_dict
@@ -54,8 +83,11 @@ def read_com_and_mol(session, stream):
     comment_dict = {}
 
 
+    # Comment section
+
     while True:
         comment = stream.readline()
+        # print(comment)
         if not comment: 
             break
         if not comment_dict and comment[0] == "\n": #before the comment section
@@ -73,65 +105,104 @@ def read_com_and_mol(session, stream):
         else:
             comment_dict[(parts[0])] = parts[1]
 
+    # print("CHECKPOINT1")
+
+    # Molecule section
+
     if comment == "@<TRIPOS>MOLECULE":
         pass
     else:
         molecule_line = stream.readline()
 
         while "@<TRIPOS>MOLECULE" not in molecule_line:
-            if not molecule_line: #if not even "\n"
+            if not molecule_line: #if it's not even "\n".  is true if at the end of a file
                 return None, None
             molecule_line = stream.readline()
+
+    # return comment_dict, None
 
     molecular_dict = {}
     mol_labels = ["mol_name", ["num_atoms", "num_bonds", "num_subst", "num_feat", "num_sets"],\
     "mol_type", "charge_type", "status_bits"]
 
+    line_num = 0
+
 
     for label in mol_labels:
-        molecule_line = stream.readline().split()
-        try:
-            # Only for the integers (num_atoms, num_bonds, etc)
+
+        line_num += 1
+        last_pos = stream.tell()
+        molecule_line = stream.readline().strip()
+
+        if "@<TRIPOS>ATOM" in molecule_line:
+            stream.seek(last_pos)
+            break
+
+
+
+
+        if line_num == 1:
+            # molecule_line = molecule_line.strip()
+            while not molecule_line:
+                molecule_line = stream.readline().strip()
+            molecular_dict[label] = molecule_line
+            continue
+
+        # Only for the integers (num_atoms, num_bonds, etc)
+        if line_num == 2:
+            molecule_line = molecule_line.split()
+
             if all(isinstance(int(item), int) for item in molecule_line):
                 molecular_dict.update(dict(zip(label, molecule_line)))
-        except (ValueError, SyntaxError):
-            molecular_dict[label] = molecule_line[0]
-
+            else:
+                raise ValueError("Second line needs to be series of integers")
+            continue
+            
+        else:
+            molecule_line = molecule_line.strip()
+            molecular_dict[label] = molecule_line
 
 
     return comment_dict, molecular_dict
 
 
-def read_atom(session, stream, atom_count):
+def read_atom(session, stream):
     """parses atom section"""
 
-    import ast
     while "@<TRIPOS>ATOM" not in stream.readline():
         pass
 
-
     atom_dict = {}
 
-    for _ in range(atom_count):
+    while True:
+        last_pos = stream.tell()
         atom_line = stream.readline().strip()
+
+        if not atom_line:
+            stream.seek(last_pos)
+            break
+
+        if "@" in atom_line:
+            stream.seek(last_pos)
+            break
         if len(atom_line) == 0:
             print("error: no line found")
         parts = atom_line.split()
         # parts wil be like, ['1', 'C1', 9.4819, 36.0139, 21.8847, 'C.3', 1, 'RIBOSE_MONOPHOSPHATE', 0.0767]
-        if len(parts) not in range(6, 11): # must be within 6-10 entries
-            print("error: not enough entries on line: ", atom_line)
+        if len(parts) not in range(6, 11): # gives error msg if there aren't enough entries
+            print("error: not enough or too many entries on a line")
             return None
 
         atom_dict[(parts[0])] = parts[1:]
 
 
-    # atom_dict would now be: 
+    # atom_dict would now be:
     # {1 : ['C1', '9.4819', '36.0139', '21.8847', 'C.3', '1', 'RIBOSE_MONOPHOSPHATE', '0.0767'],
     # 2 : ['C2'....] }
 
     return atom_dict
 
-def read_bond(session, stream, bond_count):
+def read_bond(session, stream):
     """parses bond section"""
 
     while "@<TRIPOS>BOND" not in stream.readline():
@@ -139,45 +210,73 @@ def read_bond(session, stream, bond_count):
 
     bond_dict = {}
 
-    for _ in range(bond_count):
+    while True:
+        last_pos = stream.tell()
         bond_line = stream.readline()
         parts = bond_line.split()
+
+
+        if not bond_line or "@" in bond_line or bond_line[0] == "#" or parts == 0:
+            stream.seek(last_pos)
+            break
+
         if len(parts) != 4:
             print("error: not enough entries in under bond data")
+            raise ValueError
         if not isinstance(int(parts[0]), int):
             print("error: first value is needs to be an integer")
-            return None
+            raise ValueError
 
         bond_dict[parts[0]] = parts[1:3]
 
     return bond_dict
 
-def read_substructure(session, stream, num_subst):
+def read_subst(session, stream):
     """parses substructure section"""
+    last_pos = stream.tell()
+    subst_line = stream.readline()
 
-    while "@<TRIPOS>SUBSTRUCTURE" not in stream.readline():
-        pass
+    while "@<TRIPOS>SUBSTRUCTURE" not in subst_line:
+        if "#" in subst_line or not subst_line:
+            stream.seek(last_pos)
+            return None
 
-    for _ in range(num_subst):
-        substructure_dict = {}
+        subst_line = stream.readline()
+
+    subst_dict = {}
+
+    while True:
+        last_pos = stream.tell()
         subst_line = stream.readline()
         parts = subst_line.split()
 
-        substructure_dict[parts[0]] = parts[1:]
+        # print(subst_line)
 
-    return substructure_dict
+# 
+        if not subst_line or len(parts) == 0 or "#" in subst_line:
+            stream.seek(last_pos)
+            break
+        if "#" in subst_line:
+            stream.seek(last_pos)
+            break
 
-def build_residues(s, substructure_dict):
+
+        subst_dict[parts[0]] = parts[1:]
+
+    return subst_dict
+
+
+def build_residues(s, subst_dict):
     """ create chimeraX substructure dictionary (csd) """
     csd = {}
     # csd will be something like {"1": <residue>}
 
-    for s_index in substructure_dict:
+    for s_index in subst_dict:
 
 
         # new_residue(self, residue_name, chain_id, pos, insert=' ')
 
-        residue = s.new_residue(substructure_dict[s_index][0][:4], str(substructure_dict[s_index][5]), int(s_index))
+        residue = s.new_residue(subst_dict[s_index][0][:4], str(subst_dict[s_index][5]), int(s_index))
         csd[s_index] = residue
     return csd
 
