@@ -2,12 +2,12 @@
 
 
 
-def open_mol2(session, stream, name):
+def open_mol2(session, stream, name, auto_style):
     structures = []
     atoms = 0
     bonds = 0
     while True:
-        s = _read_block(session, stream)
+        s = _read_block(session, stream, auto_style)
         if not s:
             break
         structures.append(s)
@@ -24,7 +24,7 @@ def print_dict(dict):
     print()
 
 
-def _read_block(session, stream):
+def _read_block(session, stream, auto_style):
     """function that calls subfunctions that each read a specific section of the mol2 file"""
     # First section should be commented out
     # Second section: "@<TRIPOS>MOLECULE"
@@ -55,7 +55,7 @@ def _read_block(session, stream):
             subst_dict[i[0]] = [i[1], None, None, None, None, '****']
 
 
-    s = AtomicStructure(session)
+    s = AtomicStructure(session, auto_style=auto_style)
 
     csd = build_residues(s, subst_dict)
     cad = build_atoms(s, csd, atom_dict)
