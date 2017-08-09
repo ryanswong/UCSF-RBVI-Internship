@@ -41,6 +41,8 @@ function init() {
     var label_array = [];
     var property;
 
+
+
     $('#viewdockx_table tr td').on('click', function() {
         var $currentTable = $(this).closest('table');
         var index = $(this).index();
@@ -62,6 +64,7 @@ function init() {
     });
 
 
+
     // var vdx_chart=null; 
     $('#graph_btn').on('click', function() {
         if (typeof vdx_chart != 'undefined') {
@@ -80,24 +83,41 @@ function init() {
         });
     });
 
+
+
     $('#histogram_btn').on('click', function() {
-        var data = d3.range(1000).map(d3.randomBates(10));
+        for (var i = 0; i < data_array.length; i++) {
+            if(data_array[i] === "missing"){
+                data_array[i] = 0;
+            }
+        }
+
+        if(typeof(h_data) != 'undefined'){
+            //alert("hello"); test
+            d3.selectAll('g').remove()
+        }
+
+        h_data = data_array;
+
+        max = Math.max.apply(Math, h_data);
+        min = Math.min.apply(Math, h_data);
 
         var formatCount = d3.format(",.0f");
 
         var svg = d3.select("svg"),
             margin = {top: 10, right: 30, bottom: 30, left: 30},
-            width = +svg.attr("width") - margin.left - margin.right,
+            width = +svg.attr("width") - margin.left + 10 - margin.right,
             height = +svg.attr("height") - margin.top - margin.bottom,
             g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var x = d3.scaleLinear()
+        var x = d3.scaleLinear(h_data)
+            .domain([min, max]) // x axis domain, from min and max of array
             .rangeRound([0, width]);
 
         var bins = d3.histogram()
             .domain(x.domain())
-            .thresholds(x.ticks(20))
-            (data);
+            //.thresholds()
+            (h_data);
 
         var y = d3.scaleLinear()
             .domain([0, d3.max(bins, function(d) { return d.length; })])

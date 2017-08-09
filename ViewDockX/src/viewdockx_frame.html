@@ -13,10 +13,32 @@
 
 <body onload="init();">
     <h2><font color= "#FF8080">ViewDockX</font></h2>
-    <input type="checkbox" id="show_checkboxes" />show checkboxes</>
-    <span class="checkbox"><input type="checkbox" id="check_all" />check all</></span>
+    <input type="checkbox" id="show_checkboxes" />show checkboxes</input>
+    <span class="checkbox"><input type="checkbox" id="check_all" />check all</span>
     <input id="graph_btn" type="button" value="graph" />
     <input id="histogram_btn" type="button" value="histogram" />
+
+
+
+    <meta charset="utf-8">
+    <style>
+
+    .bar rect {
+      fill: teal;
+    }
+
+    .bar text {
+      fill: #fff;
+      font: 10px sans-serif;
+    }
+
+    </style>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+
+
+
+
     TABLE
 
     <canvas id="viewdockx_chart" width="1600" height="900"></canvas>
