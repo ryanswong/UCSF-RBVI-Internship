@@ -15,3 +15,5 @@ ViewDockX/src/output_test.html
 ChimeraX_ViewDockX.egg-info
 viewdockx project.sublime-project
 viewdockx project.sublime-workspace
+
+.DS_Store

@@ -1,7 +1,64 @@
 function init() {
+
+
     $(document).ready(function() {
-        $("#viewdockx_table").tablesorter();
+        $.tablesorter.addParser({
+            // set a unique id
+            // id: 'name',
+            id: 'id_col',
+            is: function(s, viewdockx_table, cell, $cell) {
+                // return false so this parser is not auto detected
+                return false;
+            },
+            format: function(s, viewdockx_table, cell, cellIndex) {
+                var $cell = $(cell);
+                // alert(cellIndex)
+                // I could have used $(cell).data(), 
+
+                alert(cellIndex);
+
+                if (cellIndex === 0) {
+                    s = s.split("\n")[0].trim();
+                    var dec = (s + "").split(".")[1];
+                    alert(dec);
+                    return dec;
+                }
+
+
+                return s;
+
+            },
+            // flag for filter widget (true = ALWAYS search parsed values; false = search cell text)
+            parsed: false,
+            // set type, either numeric or text
+            type: 'numeric'
+
+
+        });
+
+        $('viewdockx_table').find('thead th').addClass("{sorter:'id_col'}");
+
+
+        $("#viewdockx_table").tablesorter({
+            theme: 'blue',
+            headers: {
+                0: { sorter: 'id_col' }
+                // 4: { sorter: 'id_col' }
+            },
+            widgets: ['zebra']
+        });
     });
+    // $('table').tablesorter({
+    //     theme: 'blue',
+    //     headers: {
+    //         0: { sorter: 'data' },
+    //         2: { sorter: 'data' }
+    //     },
+    //     widgets: ['zebra']
+    // });
+
+
+
 
     $("#show_checkboxes").click(function() {
 
@@ -80,75 +137,140 @@ function init() {
         });
     });
 
-    $('#histogram_btn').on('click', function() {
-        var data = d3.range(1000).map(d3.randomBates(10));
+    // $('#histogram_btn').on('click', function() {
+    //     var data = d3.range(1000).map(d3.randomBates(10));
 
-        var formatCount = d3.format(",.0f");
+    //     var formatCount = d3.format(",.0f");
 
-        var svg = d3.select("svg"),
-            margin = {top: 10, right: 30, bottom: 30, left: 30},
-            width = +svg.attr("width") - margin.left - margin.right,
-            height = +svg.attr("height") - margin.top - margin.bottom,
-            g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    //     var svg = d3.select("svg"),
+    //         margin = { top: 10, right: 30, bottom: 30, left: 30 },
+    //         width = +svg.attr("width") - margin.left - margin.right,
+    //         height = +svg.attr("height") - margin.top - margin.bottom,
+    //         g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var x = d3.scaleLinear()
-            .rangeRound([0, width]);
+    //     var x = d3.scaleLinear()
+    //         .rangeRound([0, width]);
 
-        var bins = d3.histogram()
-            .domain(x.domain())
-            .thresholds(x.ticks(20))
-            (data);
+    //     var bins = d3.histogram()
+    //         .domain(x.domain())
+    //         .thresholds(x.ticks(20))
+    //         (data);
 
-        var y = d3.scaleLinear()
-            .domain([0, d3.max(bins, function(d) { return d.length; })])
-            .range([height, 0]);
+    //     var y = d3.scaleLinear()
+    //         .domain([0, d3.max(bins, function(d) { return d.length; })])
+    //         .range([height, 0]);
 
-        var bar = g.selectAll(".bar")
-          .data(bins)
-          .enter().append("g")
-            .attr("class", "bar")
-            .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; });
+    //     var bar = g.selectAll(".bar")
+    //         .data(bins)
+    //         .enter().append("g")
+    //         .attr("class", "bar")
+    //         .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; });
 
-        bar.append("rect")
-            .attr("x", 1)
-            .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
-            .attr("height", function(d) { return height - y(d.length); });
+    //     bar.append("rect")
+    //         .attr("x", 1)
+    //         .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
+    //         .attr("height", function(d) { return height - y(d.length); });
 
-        bar.append("text")
-            .attr("dy", ".75em")
-            .attr("y", 6)
-            .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)
-            .attr("text-anchor", "middle")
-            .text(function(d) { return formatCount(d.length); });
+    //     bar.append("text")
+    //         .attr("dy", ".75em")
+    //         .attr("y", 6)
+    //         .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)
+    //         .attr("text-anchor", "middle")
+    //         .text(function(d) { return formatCount(d.length); });
 
-        g.append("g")
-            .attr("class", "axis axis--x")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
-    });
-
-
-
-
-
-
-    // alert(data_array);
-
-    // OLD SCRIPT
-    // $("#viewdockx_table tr td").click(function() {
-    //     //Reset
-    //     $("#viewdockx_table td").removeClass("highlight");
-    //     //Add highlight class to new column
-    //     var index = $(this).index();
-    //     $("#viewdockx_table tr").each(function(i, tr) {
-    //         $(tr).find('td, th').eq(index).addClass("highlight");
-    //     });
-    //     alert($(`#viewdockx_table td:nth-child(${index + 1}`).map(function() {
-    //         return $(this).text();
-
-    //     }).get());
+    //     g.append("g")
+    //         .attr("class", "axis axis--x")
+    //         .attr("transform", "translate(0," + height + ")")
+    //         .call(d3.axisBottom(x));
     // });
 
+
+
+
+
+
+
+
+    var margin = {
+        top: 30,
+        right: 20,
+        bottom: 30,
+        left: 50
+    };
+    var width = 600 - margin.left - margin.right;
+    var height = 270 - margin.top - margin.bottom;
+
+    var parseDate = d3.time.format("%d-%b-%y").parse;
+
+    var x = d3.time.scale().range([0, width]);
+    var y = d3.scale.linear().range([height, 0]);
+
+    var xAxis = d3.svg.axis().scale(x)
+        .orient("bottom").ticks(5);
+
+    var yAxis = d3.svg.axis().scale(y)
+        .orient("left").ticks(5);
+
+    var valueline = d3.svg.line()
+        .x(function (d) {
+          return x(d.date);
+        })
+        .y(function (d) {
+          return y(d.close);
+        });
+
+    var svg = d3.select("body")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Get the data
+    var data = [{
+        date: "1-May-12",
+        close: "58.13"
+    }, {
+        date: "30-Apr-12",
+        close: "53.98"
+    }, {
+        date: "27-Apr-12",
+        close: "67.00"
+    }, {
+        date: "26-Apr-12",
+        close: "89.70"
+    }, {
+        date: "25-Apr-12",
+        close: "99.00"
+    }];
+
+    data.forEach(function (d) {
+        d.date = parseDate(d.date);
+        d.close = +d.close;
+    });
+
+    // Scale the range of the data
+    x.domain(d3.extent(data, function (d) {
+        return d.date;
+        }));
+    y.domain([0, d3.max(data, function (d) {
+        return d.close;
+        })]);
+
+    svg.append("path") // Add the valueline path.
+    .attr("d", valueline(data));
+
+    svg.append("g") // Add the X Axis
+    .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    svg.append("g") // Add the Y Axis
+    .attr("class", "y axis")
+        .call(yAxis);
+
+
+    
 
 }
 
